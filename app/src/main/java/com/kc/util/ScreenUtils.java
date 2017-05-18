@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
  */
 public class ScreenUtils {
 
+
     private ScreenUtils() {
         throw new UnsupportedOperationException("u can't fuck me...");
     }
