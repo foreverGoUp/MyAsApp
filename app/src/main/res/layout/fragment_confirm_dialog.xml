@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_tip"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_tip_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/common_blank_nor"
+        android:layout_marginRight="@dimen/common_blank_nor"
+        android:layout_marginTop="@dimen/common_blank_nor"
+        android:padding="@dimen/common_dialog_tv_padding"
+        android:textSize="@dimen/common_textsize_big"
+        android:gravity="center"
+        android:text="标题" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_tip_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/common_blank_nor"
+            android:text="sssssssssssssssssssssssssssssssssssssssssssssssssssss" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/com_btn_ht_nor"
+        android:layout_margin="@dimen/common_frament_dialog_lin_margin"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_cancel"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/com_btn_ht_nor"
+            android:text="@string/common_tv_no"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:background="@drawable/dialog_btn_left_selector" />
+
+        <include layout="@layout/view_vertical" />
+
+        <Button
+            android:id="@+id/bt_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/com_btn_ht_nor"
+            android:text="@string/common_tv_ok"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn_right_selector"
+            android:textColor="#fff" />
+    </LinearLayout>
+</LinearLayout>

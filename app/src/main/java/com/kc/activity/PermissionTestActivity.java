@@ -1,15 +1,9 @@
 package com.kc.activity;
 
-import android.Manifest;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
 
 import com.kc.base.BaseActivity;
 import com.kc.myasapp.R;
-import com.zhy.m.permission.MPermissions;
 import com.zhy.m.permission.PermissionDenied;
 import com.zhy.m.permission.PermissionGrant;
 import com.zhy.m.permission.ShowRequestPermissionRationale;
@@ -22,10 +16,25 @@ public class PermissionTestActivity extends BaseActivity {
         setContentView(R.layout.activity_permission_test);
     }
 
-    public void onBtClick(View view){
-        requestPermissions(Manifest.permission.READ_PHONE_STATE
-            , Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    @Override
+    protected void initUI() {
+        
     }
+
+    @Override
+    protected void init() {
+
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+//    public void onBtClick(View view){
+//        requestPermissions(Manifest.permission.READ_PHONE_STATE
+//            , Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//    }
 
     @PermissionGrant(0)
     public void onGrant(){

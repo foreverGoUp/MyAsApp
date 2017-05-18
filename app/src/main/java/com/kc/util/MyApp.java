@@ -1,4 +1,4 @@
-package com.kc.base;
+package com.kc.util;
 
 import android.app.Application;
 import android.widget.Toast;
@@ -7,7 +7,7 @@ import android.widget.Toast;
  * Created by Administrator on 2017/1/15.
  */
 public class MyApp extends Application {
-
+    public static Integer heartBagData;// 心跳包的值
 
     private static MyApp mMyApp;
     @Override
@@ -16,7 +16,7 @@ public class MyApp extends Application {
         mMyApp = this;
     }
 
-    public static Application getApplication(){
+    public static Application getContext() {
         return mMyApp;
     }
 

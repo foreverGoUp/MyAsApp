@@ -1,6 +1,6 @@
 /**
  *
- *	created by Mr.Simple, Oct 1, 20141:42:43 PM.
+ *	created by Mr.Simple, Sep 30, 201411:13:20 PM.
  *	Copyright (c) 2014, hehonghui@umeng.com All Rights Reserved.
  *
  *                #####################################################
@@ -30,40 +30,69 @@
  *                #####################################################
  */
 
-package com.kc.custom;
+package com.kc.custom.PullToRefresh.impl;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.AbsListView;
-import android.widget.ListAdapter;
+import android.widget.ListView;
+
+import com.kc.custom.PullToRefresh.RefreshAdaterView;
+
 
 /**
  * @author mrsimple
- * @param <T>
  */
-public abstract class RefreshAdaterView<T extends AbsListView> extends RefreshLayoutBase<T> {
+public class RefreshListView extends RefreshAdaterView<ListView> {
 
-    public RefreshAdaterView(Context context) {
+    /**
+     * @param context
+     */
+    public RefreshListView(Context context) {
         this(context, null);
     }
 
-    public RefreshAdaterView(Context context, AttributeSet attrs) {
+    /**
+     * @param context
+     * @param attrs
+     */
+    public RefreshListView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public RefreshAdaterView(Context context, AttributeSet attrs, int defStyle) {
+    /**
+     * @param context
+     * @param attrs
+     * @param defStyle
+     */
+    public RefreshListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    /**
-     * 
-     */
-    public void setAdapter(ListAdapter adapter) {
-        mContentView.setAdapter(adapter);
+    @Override
+    protected void setupContentView(Context context) {
+        mContentView = new ListView(context);
+        // 设置滚动监听器
+        mContentView.setOnScrollListener(this);
+
     }
 
-    public ListAdapter getAdapter() {
-        return mContentView.getAdapter();
+    @Override
+    protected boolean isTop() {
+
+        // Log.d(VIEW_LOG_TAG,
+        // "### first pos = " + mContentView.getFirstVisiblePosition()
+        // + ", getScrollY= " + getScrollY());
+        return mContentView.getFirstVisiblePosition() == 0
+                && getScrollY() <= mHeaderView.getMeasuredHeight();
     }
 
+    @Override
+    protected boolean isBottom() {
+        // Log.d(VIEW_LOG_TAG, "### last position = " +
+        // contentView.getLastVisiblePosition()
+        // + ", count = " + contentView.getAdapter().getCount());
+        return mContentView != null && mContentView.getAdapter() != null
+                && mContentView.getLastVisiblePosition() ==
+                mContentView.getAdapter().getCount() - 1;
+    }
 }

@@ -1,12 +1,12 @@
 package com.kc.activity;
 
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import com.kc.base.MyApp;
 import com.kc.myasapp.R;
 import com.kc.util.Mail;
+import com.kc.util.MyApp;
 
 import java.io.File;
 import java.io.IOException;

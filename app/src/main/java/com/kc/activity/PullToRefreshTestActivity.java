@@ -1,16 +1,12 @@
 package com.kc.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 
-import com.kc.base.MyApp;
-import com.kc.custom.BaseRefreshLayout;
-import com.kc.custom.impl.MyRefreshListView;
-import com.kc.custom.impl.RefreshListView;
-import com.kc.listener.OnLoadListener;
-import com.kc.listener.OnRefreshListener;
-import com.kc.myasapp.R;
+import com.kc.custom.PullToRefresh.BaseRefreshLayout;
+import com.kc.custom.PullToRefresh.impl.MyRefreshListView;
+import com.kc.util.MyApp;
 
 public class PullToRefreshTestActivity extends AppCompatActivity {
 
