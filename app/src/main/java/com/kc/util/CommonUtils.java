@@ -18,21 +18,35 @@ public class CommonUtils {
 
     private static final String TAG = "CommonUtils";
 
-    private static Toast toast;
-
+    private static Toast sToast;
+    private static long sLastToastShowTime;
+    private static String sLastToastShowText;
     public static void showToast(Context context,
                                  String content) {
-        if (toast == null) {
-            toast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
+        if (content == null) {
+            return;
         }
-        toast.setText(content);
+        if (sToast == null) {
+            sToast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
+        }
+        //如果2次文本相同且显示间隔小于Toast.LENGTH_SHORT（2s）,则不显示
+        if (sLastToastShowText != null && sLastToastShowText.equals(content)) {
+            if (System.currentTimeMillis() - sLastToastShowTime < 2000) {
+                return;
+            }
+        }
+        sToast.setText(content);
         //设置显示时长
         if (content.length() > 10) {
-            toast.setDuration(Toast.LENGTH_LONG);
+            sToast.setDuration(Toast.LENGTH_LONG);
         } else {
-            toast.setDuration(Toast.LENGTH_SHORT);
+            sToast.setDuration(Toast.LENGTH_SHORT);
         }
-        toast.show();
+        sToast.show();
+
+        //记录
+        sLastToastShowTime = System.currentTimeMillis();
+        sLastToastShowText = content;
     }
 
     /*
