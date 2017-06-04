@@ -45,6 +45,7 @@ public class RetrofitExampleActivity extends AppCompatActivity {
      */
     private void interceptorsUsageEx() {
         //设置通用Header
+        //设置通用Header
     }
 
     private void baseUsageExample() {
