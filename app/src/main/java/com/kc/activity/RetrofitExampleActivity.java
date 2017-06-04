@@ -11,10 +11,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,8 +47,60 @@ public class RetrofitExampleActivity extends AppCompatActivity {
      * 实现缓存
      */
     private void interceptorsUsageEx() {
-        //设置通用Header
-        //设置通用Header
+        //设置通用Header:为所有的请求都添加相同的多个header
+
+        //统一输出请求日志
+
+        //拦截响应
+
+    }
+
+    public static Interceptor getResponseHeader() {
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                okhttp3.Response response = chain.proceed(chain.request());
+                String time = response.header("time");//获取到响应头信息
+                if (time != null) {
+
+                }
+                return chain.proceed(response);
+            }
+        };
+
+        return interceptor;
+    }
+
+    /**
+     * 日志拦截器
+     */
+    public static HttpLoggingInterceptor getHttpLoggingInterceptor() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        return interceptor;
+    }
+
+    /**
+     * 使用addHeader()不会覆盖之前设置的header,若使用header()则会覆盖之前的header
+     */
+    public static Interceptor getRequestHeader() {
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request originReq = chain.request();
+                Request.Builder builder = originReq.newBuilder();
+                builder.addHeader("appid", "1");
+                builder.addHeader("timeStamp", "1");
+                builder.addHeader("appkey", "1");
+                builder.addHeader("signature", "1");
+
+                builder.method(originReq.method(), originReq.body());
+                Request request = builder.build();
+                return chain.proceed(request);
+            }
+        };
+
+        return interceptor;
     }
 
     private void baseUsageExample() {
