@@ -28,4 +28,8 @@ dependencies {
     compile 'com.zhy:mpermission-api:1.0.0'
     compile 'com.blankj:utilcode:1.0'
     compile files('libs/activation.jar')
+    //RxJava/RxAndroid
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.3.0'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
 }

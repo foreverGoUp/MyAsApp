@@ -28,6 +28,7 @@ public class ShowCsmViewActivity extends AppCompatActivity implements CsmDialVie
                 ((CsmDialView) view).startAnimation(250);
             }
         });
+
     }
 
     @Override
