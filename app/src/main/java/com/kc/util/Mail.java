@@ -1,11 +1,15 @@
 package com.kc.util;
 
 /**
- * Created by Administrator on 2017/1/22.
+ * Created by ckc on 2017/1/22.
  * 代码来自google网站中
  */
+
+import com.jy.channelhandler.PublicHandler;
+
 import java.util.Date;
 import java.util.Properties;
+
 import javax.activation.CommandMap;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -23,6 +27,7 @@ import javax.mail.internet.MimeMultipart;
 
 
 public class Mail extends javax.mail.Authenticator {
+    private static final String TAG = "Mail";
     private String _user;
     private String _pass;
 
@@ -80,7 +85,7 @@ public class Mail extends javax.mail.Authenticator {
     public boolean send() throws Exception {
         Properties props = _setProperties();
 
-        if(!_user.equals("") && !_pass.equals("") && _to.length > 0 && !_from.equals("") && !_subject.equals("") && !_body.equals("")) {
+        if (!_user.equals("") && !_pass.equals("") && _to.length > 0 && !_from.equals("") && !_subject.equals("") && !_body.equals("")) {
             Session session = Session.getInstance(props, this);
 
             MimeMessage msg = new MimeMessage(session);
@@ -132,11 +137,11 @@ public class Mail extends javax.mail.Authenticator {
 
         props.put("mail.smtp.host", _host);
 
-        if(_debuggable) {
+        if (_debuggable) {
             props.put("mail.debug", "true");
         }
 
-        if(_auth) {
+        if (_auth) {
             props.put("mail.smtp.auth", "true");
         }
 
@@ -170,4 +175,63 @@ public class Mail extends javax.mail.Authenticator {
     }
 
     // more of the getters and setters …..
+
+    public static void send(final boolean deleteFile, final String subject, final String... filePath) {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                boolean scs = send(subject, filePath);
+                if (scs) {
+                    PublicHandler.getInstant().getHandler().sendEmptyMessage(PublicHandler.UPLOAD_LOG_SCS);
+                } else {
+                    PublicHandler.getInstant().getHandler().sendEmptyMessage(PublicHandler.UPLOAD_LOG_FAIL);
+                }
+                //删除文件
+//                if (deleteFile) {
+//                    for (int i = 0; i < filePath.length; i++) {
+//                        if (FileUtil.deleteFile(filePath[i])) {
+//                            Log.e(TAG, "删除日志文件成功");
+//                        } else {
+//                            Log.e(TAG, "删除日志文件失败...");
+//                        }
+//                    }
+//                }
+            }
+        }).start();
+    }
+
+    private static boolean send(String subject, String... filePath) {
+        Log.e(TAG, "准备发送邮件");
+        Mail mail = new Mail("successfulpeter@163.com", "Kcinwyyx1");
+        mail.setTo(new String[]{"successfulpeter@163.com"});
+        mail.setSubject(subject);
+        mail.setBody("请看附件~");
+        mail.setFrom("successfulpeter@163.com");
+        try {
+            for (int i = 0; i < filePath.length; i++) {
+                mail.addAttachment(filePath[i]);
+            }
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            Log.e(TAG, "添加附件异常...");
+            e1.printStackTrace();
+            return false;
+        }
+        try {
+            Log.e(TAG, "正在发送邮件！");
+            if (mail.send()) {
+                //删除本地已发送邮件
+                Log.e(TAG, "邮件发送成功！");
+                return true;
+            } else {
+                Log.e(TAG, "邮件发送失败！");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "邮件发送异常！");
+            return false;
+        }
+    }
 }

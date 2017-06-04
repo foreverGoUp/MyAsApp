@@ -1,12 +1,11 @@
-package com.kc.custom.impl;
+package com.kc.custom.PullToRefresh.impl;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.kc.custom.BaseRefreshLayout;
+import com.kc.custom.PullToRefresh.BaseRefreshLayout;
 
 /**
  * Created by Administrator on 2017/2/5.

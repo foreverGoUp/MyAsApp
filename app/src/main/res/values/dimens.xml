@@ -2,4 +2,29 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- 标题高度 -->
+    <dimen name="common_title_height">45dp</dimen>
+
+    <!-- 字体大小 -->
+    <dimen name="common_textsize_xxxbig">40sp</dimen>
+    <dimen name="common_textsize_xxbig">30sp</dimen>
+    <dimen name="common_textsize_xbig">25sp</dimen>
+    <dimen name="common_textsize_big">20sp</dimen>
+    <dimen name="common_textsize_mid">18sp</dimen>
+    <dimen name="common_textsize_sml">15sp</dimen>
+
+    <!-- 空白间隔 -->
+    <dimen name="common_blank_xxbig">50dp</dimen>
+    <dimen name="common_blank_xbig">30dp</dimen>
+    <dimen name="common_blank_big">20dp</dimen>
+    <dimen name="common_blank_mid">15dp</dimen>
+    <dimen name="common_blank_nor">10dp</dimen>
+    <dimen name="common_blank_sml">5dp</dimen>
+
+    <!-- 图标大小 -->
+    <dimen name="common_img_size_xbig">60dp</dimen>
+    <dimen name="common_img_size_big">40dp</dimen>
+    <dimen name="common_img_size_nor">25dp</dimen>
+    <dimen name="common_img_size_sml">15dp</dimen>
 </resources>
