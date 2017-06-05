@@ -5,8 +5,6 @@ package com.kc.util;
  * 代码来自google网站中
  */
 
-import com.jy.channelhandler.PublicHandler;
-
 import java.util.Date;
 import java.util.Properties;
 
@@ -177,28 +175,28 @@ public class Mail extends javax.mail.Authenticator {
     // more of the getters and setters …..
 
     public static void send(final boolean deleteFile, final String subject, final String... filePath) {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                boolean scs = send(subject, filePath);
-                if (scs) {
-                    PublicHandler.getInstant().getHandler().sendEmptyMessage(PublicHandler.UPLOAD_LOG_SCS);
-                } else {
-                    PublicHandler.getInstant().getHandler().sendEmptyMessage(PublicHandler.UPLOAD_LOG_FAIL);
-                }
-                //删除文件
-//                if (deleteFile) {
-//                    for (int i = 0; i < filePath.length; i++) {
-//                        if (FileUtil.deleteFile(filePath[i])) {
-//                            Log.e(TAG, "删除日志文件成功");
-//                        } else {
-//                            Log.e(TAG, "删除日志文件失败...");
-//                        }
-//                    }
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                boolean scs = send(subject, filePath);
+//                if (scs) {
+//                    PublicHandler.getInstant().getHandler().sendEmptyMessage(PublicHandler.UPLOAD_LOG_SCS);
+//                } else {
+//                    PublicHandler.getInstant().getHandler().sendEmptyMessage(PublicHandler.UPLOAD_LOG_FAIL);
 //                }
-            }
-        }).start();
+//                //删除文件
+////                if (deleteFile) {
+////                    for (int i = 0; i < filePath.length; i++) {
+////                        if (FileUtil.deleteFile(filePath[i])) {
+////                            Log.e(TAG, "删除日志文件成功");
+////                        } else {
+////                            Log.e(TAG, "删除日志文件失败...");
+////                        }
+////                    }
+////                }
+//            }
+//        }).start();
     }
 
     private static boolean send(String subject, String... filePath) {

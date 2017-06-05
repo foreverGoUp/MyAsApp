@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_dialog_tip"
+    android:background="@drawable/shape_bg_dialog_tip"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -13,8 +13,6 @@
         android:gravity="center"
         android:text="标题"
         android:textSize="@dimen/common_textsize_mid" />
-
-    <include layout="@layout/view_horizontal" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -34,10 +32,10 @@
         android:id="@+id/bt_ok"
         android:layout_width="match_parent"
         android:layout_margin="@dimen/common_blank_nor"
-        android:layout_height="@dimen/com_btn_ht_nor"
-        android:text="@string/common_tv_ok"
+        android:layout_height="30dp"
+        android:text="确定"
         android:gravity="center"
         android:textColor="#fff"
-        android:background="@drawable/bg_btn_not_selected" />
+        android:background="#ccc" />
 
 </LinearLayout>

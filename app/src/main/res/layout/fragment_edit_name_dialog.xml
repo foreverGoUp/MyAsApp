@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_dialog_tip">
+    android:background="@drawable/shape_bg_dialog_tip">
 
     <TextView
         android:id="@+id/tv_edit_name_title"
@@ -12,21 +12,24 @@
         android:textSize="@dimen/common_textsize_big"
         android:text="标题" />
 
-    <include layout="@layout/view_horizontal" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#888" />
 
     <EditText
         android:id="@+id/et_edit_name"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:background="@drawable/bg_stroke_gray"
+        android:background="@drawable/shape_bg_et"
         android:padding="5dp"
         android:layout_margin="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/com_btn_ht_nor"
+        android:layout_height="30dp"
         android:gravity="center_vertical"
-        android:layout_margin="@dimen/common_frament_dialog_lin_margin"
+        android:layout_margin="@dimen/common_blank_nor"
         android:orientation="horizontal">
 
         <Button
@@ -34,19 +37,19 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/common_tv_no"
+            android:text="取消"
             android:gravity="center"
             android:textColor="#fff"
-            android:background="@drawable/dialog_btn_left_selector" />
+            android:background="#ccc" />
 
         <Button
             android:id="@+id/bt_ok"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/common_tv_ok"
+            android:text="确定"
             android:gravity="center"
             android:textColor="#fff"
-            android:background="@drawable/dialog_btn_right_selector" />
+            android:background="#ccc" />
     </LinearLayout>
 </LinearLayout>

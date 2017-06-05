@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 
-import com.jy.R;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -90,7 +88,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
                 e.printStackTrace();
             }
             Log.e(TAG, "退出应用中...");
-            JYApplication.exitApp();
+            MyApp.exitApp();
         }
     }
 
@@ -130,7 +128,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 //                    Looper.loop();
 //                }
 //            }.start();
-            JYApplication.showToast("很抱歉,程序出现异常");
+//            JYApplication.showToast("很抱歉,程序出现异常");
             // 收集设备参数信息  
             collectDeviceInfo(mContext);
             // 保存日志文件  
@@ -150,9 +148,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
             String[] fPaths = new String[2];
             fPaths[0] = filePath;
             fPaths[1] = FileUtil.getFilePath(FileUtil.DIR_APP_LOGOUT, FileUtil.getLogoutFileName());
-            String subject = String.format(JYApplication.getContext().getResString(R.string.crash_mail_subject)
-                    , JYApplication.getContext().getResString(R.string.app_name));
-            Mail.send(true, subject, fPaths);
+//            String subject = String.format(JYApplication.getContext().getResString(R.string.crash_mail_subject)
+//                    , JYApplication.getContext().getResString(R.string.app_name));
+//            Mail.send(true, subject, fPaths);
         } else {
             Log.e(TAG, "发送邮件失败，文件不存在...");
         }

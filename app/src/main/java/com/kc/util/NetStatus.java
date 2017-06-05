@@ -72,7 +72,7 @@ public class NetStatus {
     public static String GetNetworkType() {
         String strNetworkType = "";
 
-        ConnectivityManager manager = (ConnectivityManager) JYApplication.getContext().getSystemService(
+        ConnectivityManager manager = (ConnectivityManager) MyApp.getContext().getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {

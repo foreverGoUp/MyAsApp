@@ -1,6 +1,7 @@
 package com.kc.util;
 
-import com.jy.bean.Command;
+
+import com.kc.bean.Command;
 
 import java.util.Comparator;
 

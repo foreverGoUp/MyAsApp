@@ -28,4 +28,7 @@ public class MyApp extends Application {
         }
     }
 
+    public static void exitApp() {
+
+    }
 }

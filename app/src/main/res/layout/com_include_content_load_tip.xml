@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:onClick="onClick"
-    android:id="@+id/com_llayout_content_fail_tip"
+    android:id="@+id/com_llayout_content_load_tip"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
@@ -18,6 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_blank_sml"
-        android:text="@string/com_load_fail_click_retry" />
+        android:text="加载中..." />
 
 </LinearLayout>

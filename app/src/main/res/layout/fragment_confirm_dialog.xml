@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_dialog_tip"
+    android:background="@drawable/shape_bg_dialog_tip"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -12,7 +12,7 @@
         android:layout_marginLeft="@dimen/common_blank_nor"
         android:layout_marginRight="@dimen/common_blank_nor"
         android:layout_marginTop="@dimen/common_blank_nor"
-        android:padding="@dimen/common_dialog_tv_padding"
+        android:padding="@dimen/common_blank_sml"
         android:textSize="@dimen/common_textsize_big"
         android:gravity="center"
         android:text="标题" />
@@ -36,8 +36,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/com_btn_ht_nor"
-        android:layout_margin="@dimen/common_frament_dialog_lin_margin"
+        android:layout_height="30dp"
+        android:layout_margin="@dimen/common_blank_nor"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -45,22 +45,24 @@
             android:id="@+id/bt_cancel"
             android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/com_btn_ht_nor"
-            android:text="@string/common_tv_no"
+            android:layout_height="30dp"
+            android:text="取消"
             android:gravity="center"
             android:textColor="#fff"
-            android:background="@drawable/dialog_btn_left_selector" />
+            android:background="#ccc" />
 
-        <include layout="@layout/view_vertical" />
+        <View
+            android:layout_width="@dimen/common_blank_sml"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/bt_ok"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/com_btn_ht_nor"
-            android:text="@string/common_tv_ok"
+            android:layout_height="30dp"
+            android:text="确定"
             android:gravity="center"
             android:layout_weight="1"
-            android:background="@drawable/dialog_btn_right_selector"
+            android:background="#ccc"
             android:textColor="#fff" />
     </LinearLayout>
 </LinearLayout>

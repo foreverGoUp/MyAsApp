@@ -12,7 +12,7 @@ public class SPreferencesHelper {
     private static final String mPreferencesName = "SHPreferences";
 
     public static void saveString(String key, String value) {
-        SharedPreferences sP = JYApplication.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
+        SharedPreferences sP = MyApp.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
         if (sP != null) {
             SharedPreferences.Editor editor = sP.edit();
             editor.putString(key, value);
@@ -21,7 +21,7 @@ public class SPreferencesHelper {
     }
 
     public static String getString(String key) {
-        SharedPreferences sP = JYApplication.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
+        SharedPreferences sP = MyApp.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
         if (sP != null) {
             return sP.getString(key, null);
         } else {
@@ -30,7 +30,7 @@ public class SPreferencesHelper {
     }
 
     public static void saveBool(String key, boolean value) {
-        SharedPreferences sP = JYApplication.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
+        SharedPreferences sP = MyApp.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
         if (sP != null) {
             SharedPreferences.Editor editor = sP.edit();
             editor.putBoolean(key, value);
@@ -39,7 +39,7 @@ public class SPreferencesHelper {
     }
 
     public static boolean getBool(String key) {
-        SharedPreferences sP = JYApplication.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
+        SharedPreferences sP = MyApp.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
         if (sP != null) {
             return sP.getBoolean(key, false);
         } else {
@@ -48,7 +48,7 @@ public class SPreferencesHelper {
     }
 
     public static void saveInt(String key, int value) {
-        SharedPreferences sP = JYApplication.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
+        SharedPreferences sP = MyApp.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
         if (sP != null) {
             SharedPreferences.Editor editor = sP.edit();
             editor.putInt(key, value);
@@ -57,7 +57,7 @@ public class SPreferencesHelper {
     }
 
     public static int getInt(String key) {
-        SharedPreferences sP = JYApplication.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
+        SharedPreferences sP = MyApp.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
         if (sP != null) {
             return sP.getInt(key, -404);
         } else {
@@ -66,7 +66,7 @@ public class SPreferencesHelper {
     }
 
     public static void clear() {
-//        SharedPreferences mSp = JYApplication.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
+//        SharedPreferences mSp = MyApp.getContext().getSharedPreferences(mPreferencesName, Context.MODE_PRIVATE);
 //        if (mSp != null) {
 //            SharedPreferences.Editor mEditor = mSp.edit();
 //            mEditor = mSp.edit();

@@ -1,23 +1,18 @@
 package com.kc.util;
 
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSON;
-import com.jy.R;
-import com.jy.bean.ApkUpdateInfo;
+import com.kc.bean.ApkUpdateInfo;
+import com.kc.myasapp.R;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -196,52 +191,52 @@ public class UpdateManager {
     }
 
     public void showNoticeDialog() {
-        Builder builder = new Builder(mContext);
-        String apkUpdate = JYApplication.getResString(R.string.apk_update);
-        builder.setTitle(apkUpdate);
-        String resString = JYApplication.getResString(R.string.swpakcet_quick_downl);
-        builder.setMessage(resString);
-        String download = JYApplication.getResString(R.string.download);
-        builder.setPositiveButton(download, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                showDownloadDialog();
-            }
-        });
-        String afterTalk = JYApplication.getResString(R.string.after_talk);
-        builder.setNegativeButton(afterTalk, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                cancelUpdate();
-            }
-        });
-        noticeDialog = builder.create();
-        noticeDialog.setCanceledOnTouchOutside(false);
-        noticeDialog.show();
+//        Builder builder = new Builder(mContext);
+//        String apkUpdate = JYApplication.getResString(R.string.apk_update);
+//        builder.setTitle(apkUpdate);
+//        String resString = JYApplication.getResString(R.string.swpakcet_quick_downl);
+//        builder.setMessage(resString);
+//        String download = JYApplication.getResString(R.string.download);
+//        builder.setPositiveButton(download, new OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                showDownloadDialog();
+//            }
+//        });
+//        String afterTalk = JYApplication.getResString(R.string.after_talk);
+//        builder.setNegativeButton(afterTalk, new OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                cancelUpdate();
+//            }
+//        });
+//        noticeDialog = builder.create();
+//        noticeDialog.setCanceledOnTouchOutside(false);
+//        noticeDialog.show();
     }
 
     private void showDownloadDialog() {
-        Builder builder = new Builder(mContext);
-        builder.setTitle(JYApplication.getResString(R.string.apk_update));
-        final LayoutInflater inflater = LayoutInflater.from(mContext);
-        View v = inflater.inflate(R.layout.progress, null);
-        mProgress = (ProgressBar) v.findViewById(R.id.progress);
-        builder.setView(v);
-        builder.setNegativeButton(JYApplication.getResString(R.string.common_tv_no), new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                cancelUpdate();
-                mIntercepted = true;
-            }
-        });
-        downloadDialog = builder.create();
-        downloadDialog.setCanceledOnTouchOutside(false);
-        downloadDialog.show();
-
-        downloadApk();
+//        Builder builder = new Builder(mContext);
+//        builder.setTitle(JYApplication.getResString(R.string.apk_update));
+//        final LayoutInflater inflater = LayoutInflater.from(mContext);
+//        View v = inflater.inflate(R.layout.progress, null);
+//        mProgress = (ProgressBar) v.findViewById(R.id.progress);
+//        builder.setView(v);
+//        builder.setNegativeButton(JYApplication.getResString(R.string.common_tv_no), new OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                cancelUpdate();
+//                mIntercepted = true;
+//            }
+//        });
+//        downloadDialog = builder.create();
+//        downloadDialog.setCanceledOnTouchOutside(false);
+//        downloadDialog.show();
+//
+//        downloadApk();
     }
 
 
@@ -257,7 +252,7 @@ public class UpdateManager {
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.connect();
                 int length = conn.getContentLength();
-                com.jy.util.Log.e(TAG, "开始下载,新apk大小（字节）：" + length);
+                Log.e(TAG, "开始下载,新apk大小（字节）：" + length);
                 InputStream is = conn.getInputStream();
 
                 mSaveApkPath = FileUtil.getFilePath(FileUtil.DIR_APP_APK, mSaveApkName);

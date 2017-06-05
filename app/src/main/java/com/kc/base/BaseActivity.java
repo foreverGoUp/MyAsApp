@@ -7,32 +7,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.jy.R;
-import com.jy.activity.ForgetActivity;
-import com.jy.activity.HomeActivity;
-import com.jy.activity.LoginActivity;
-import com.jy.activity.RegisterActivity;
-import com.jy.activity.WelcomeActivity;
-import com.jy.channelhandler.PublicHandler;
-import com.jy.data.DataCenter;
-import com.jy.data.SPreferencesHelper;
-import com.jy.dialogfragment.ConfirmDialogFragment.ConfirmDialogListener;
-import com.jy.dialogfragment.EditNameDialogFragment;
-import com.jy.dialogfragment.TipDialogFragment.OnTipOkListener;
-import com.jy.interf.INotificationListener;
-import com.jy.netty.NettyUtil;
-import com.jy.tool.TextTool;
-import com.jy.util.API;
-import com.jy.util.ActivityCollector;
-import com.jy.util.AppConstant;
-import com.jy.util.CommandUtils;
-import com.jy.util.CommonUtils;
-import com.jy.util.JYApplication;
-import com.jy.util.Log;
-import com.jy.util.NetStatus;
+import com.kc.dialogfragment.ConfirmDialogFragment;
+import com.kc.dialogfragment.EditNameDialogFragment;
+import com.kc.dialogfragment.TipDialogFragment;
+import com.kc.interf.INotificationListener;
+import com.kc.netty.NettyUtil;
+import com.kc.netty.PublicHandler;
+import com.kc.tool.AppConstant;
+import com.kc.util.API;
+import com.kc.util.ActivityCollector;
+import com.kc.util.CommonUtils;
 
-public abstract class BaseActivity extends FragmentActivity implements INotificationListener, OnTipOkListener,
-        ConfirmDialogListener {
+public abstract class BaseActivity extends FragmentActivity implements INotificationListener, TipDialogFragment.OnTipOkListener,
+        ConfirmDialogFragment.ConfirmDialogListener {
 
     protected String TAG = this.getClass().getSimpleName();
 
@@ -142,7 +129,7 @@ public abstract class BaseActivity extends FragmentActivity implements INotifica
      * 
      * @param msg 对话框具体信息
      */
-    protected void showConfirmDialog(ConfirmDialogListener listener, int code, String title, String msg) {
+    protected void showConfirmDialog(ConfirmDialogFragment.ConfirmDialogListener listener, int code, String title, String msg) {
         DialogFactory.getInstance().showConfirmDialog(listener, code, title, msg);
     }
 
@@ -157,7 +144,7 @@ public abstract class BaseActivity extends FragmentActivity implements INotifica
      * 
      * @param cancelable 对话框是否可触摸屏幕或返回键取消
      */
-    protected void showTipDialog(OnTipOkListener listener, int code, String title, String msg, boolean cancelable) {
+    protected void showTipDialog(TipDialogFragment.OnTipOkListener listener, int code, String title, String msg, boolean cancelable) {
         DialogFactory.getInstance().showTipDialog(listener, code, title, msg, cancelable);
     }
 
@@ -173,78 +160,6 @@ public abstract class BaseActivity extends FragmentActivity implements INotifica
      */
     @Override
     public void notice(int code) {
-        switch (code) {
-            case PublicHandler.NETWORK_VALID:
-                DialogFactory.getInstance().removeShowingDialog(PublicHandler.NETWORK_INVALID);
-                NettyUtil.getInstance().doConnect();
-                break;
-            case PublicHandler.CONNECT_SERVER_SUCCESS:
-                connectToServer();
-                break;
-            case PublicHandler.ATTEMPT_CONNECT_TO_SERVER:
-                if (NetStatus.isNetworkAvailable(this)) {
-                    NettyUtil.getInstance().doConnect();
-                } else {
-                    com.jy.util.Log.e(TAG, "网络不可用，取消尝试连接服务...");
-                    showToast(TextTool.getTitle(PublicHandler.NETWORK_INVALID));
-                }
-                break;
-        }
-
-        // 当用户在欢迎、连接类型、登陆界面不通知
-        if (this.getClass() == WelcomeActivity.class
-                || this.getClass() == LoginActivity.class) {
-            if (code == API.USER_REQUEST_LOGIN_ELSEWHERE
-                    || code == PublicHandler.JUR_CHANGED
-                    || code == PublicHandler.CONNECT_SERVER_FAILED) {
-                return;
-            }
-        }
-
-        switch (code) {
-            case PublicHandler.CONNECT_SERVER_SUCCESS:
-            case PublicHandler.UPLOAD_LOG_SCS:
-            case PublicHandler.UPLOAD_LOG_FAIL:
-            case API.NOTICE_DEVICE_CTRL_FAIL:
-            case API.NOTICE_DEVICE_ALL_OFFLINE:
-            case API.CONTROL_JUR_INVALID:
-            case API.USER_REQUEST_GET_DEVICEINFO_ERR:
-            case API.REQUEST_GET_ERR:
-            case API.USER_REQUEST_SET_ERR:
-                showToast(TextTool.getTitle(code));
-                break;
-            case API.USER_REQUEST_LOGIN_ELSEWHERE:
-                AppConstant.hasUserForcedOffline = true;
-                clearBeforeGoToLogin();
-            case PublicHandler.NETWORK_INVALID:
-            case PublicHandler.JUR_NEED_PARENT_GRANT:
-                this.showTipDialog(this, code, TextTool.getTitle(code), TextTool.getMessage(code), false);
-                break;
-            case PublicHandler.CONNECT_SERVER_FAILED:
-                if (NetStatus.isNetworkAvailable(this)) {
-                    this.showTipDialog(this, code, TextTool.getTitle(code), TextTool.getMessage(code), false);
-                }
-                break;
-            case PublicHandler.JUR_CHANGED:
-                if (DataCenter.getInstance().getUser().getJur() == AppConstant.JUR_NONE) {
-                    clearBeforeGoToLogin();
-                    this.showTipDialog(this, code, TextTool.getTitle(code), getResString(R.string.dialog_m_jur_changed_need_grant), false);
-                } else {
-                    this.showTipDialog(this, code, TextTool.getTitle(code), TextTool.getMessage(code), false);
-                }
-                break;
-        }
-    }
-
-    private void connectToServer() {
-        if (JYApplication.autoReLogin) {
-            String pwd = SPreferencesHelper.getString(AppConstant.SP_USER_PSW);
-            String userPhone = SPreferencesHelper.getString(AppConstant.SP_USER_PHONE);
-            Log.e(TAG, "重登数据：" + userPhone + "," + pwd);
-            CommandUtils.sendReLoginCmd(userPhone, pwd);//重连后自动登录
-        }
-        //检查发送命令线程是否启动
-        JYApplication.startSendCmdThead();
     }
 
     /*
@@ -253,9 +168,6 @@ public abstract class BaseActivity extends FragmentActivity implements INotifica
     @Override
     public void onBackPressed() {
         // TODO 自动生成的方法存根
-        if (this.getClass() != HomeActivity.class) {
-            this.finish();
-        }
     }
 
     @Override
@@ -317,24 +229,6 @@ public abstract class BaseActivity extends FragmentActivity implements INotifica
     @Override
     public void onTipOk(int code) {
         // TODO 自动生成的方法存根
-        switch (code) {
-            case API.USER_REQUEST_LOGIN_ELSEWHERE:
-            case PublicHandler.JUR_CHANGED:
-                if (this.getClass() == WelcomeActivity.class
-                        || this.getClass() == LoginActivity.class
-                        || this.getClass() == RegisterActivity.class
-                        || this.getClass() == ForgetActivity.class) {
-                    return;
-                }
-                if (code == PublicHandler.JUR_CHANGED) {
-                    if (DataCenter.getInstance().getUser().getJur() == AppConstant.JUR_NONE) {
-                        goToReLogin();
-                    }
-                } else {
-                    goToReLogin();
-                }
-                break;
-        }
     }
 
     // 确认对话框的回调方法
@@ -361,7 +255,6 @@ public abstract class BaseActivity extends FragmentActivity implements INotifica
         // 断开信道重连，服务器好处理
         AppConstant.hasUserForcedOffline = false;
         NettyUtil.getInstance().disConnected();
-        JYApplication.autoReLogin = false;
     }
 
 
@@ -371,6 +264,6 @@ public abstract class BaseActivity extends FragmentActivity implements INotifica
      */
     protected void goToReLogin() {
         ActivityCollector.getInstance().finishAll();
-        this.startActivity(new Intent(this, LoginActivity.class));
+//        this.startActivity(new Intent(this, LoginActivity.class));
     }
 }
