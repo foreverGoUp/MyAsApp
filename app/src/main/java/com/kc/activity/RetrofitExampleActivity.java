@@ -64,7 +64,7 @@ public class RetrofitExampleActivity extends AppCompatActivity {
                 if (time != null) {
 
                 }
-                return chain.proceed(response);
+                return response;
             }
         };
 
