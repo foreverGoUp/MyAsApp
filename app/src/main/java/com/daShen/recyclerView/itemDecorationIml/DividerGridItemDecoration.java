@@ -8,14 +8,14 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.View;
 
 /**
  * Created by ckc on 2017/7/1.
- * 当item数量不足填充整个屏幕时，该类装饰的最后一行底部还是会有分割线
+ * 1、当item数量不足填充整个屏幕时，该类装饰的最后一行底部还是会有分割线
  * 但是一旦item数量填充整个屏幕且最后一行隐藏在屏幕外，上拉到最后一行时
  * ，最后一行底部没有出现分割线。
+ * 2、android.R.attr.listDivider为android系统资源，可在style中自定义该资源
  *
  * @author zhy
  */
@@ -50,7 +50,7 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
 
     private void drawHorizontal(Canvas c, RecyclerView parent) {
         int childCount = parent.getChildCount();
-        Log.d("dsd", "drawHorizontal, childCount=" + childCount);
+//        Log.d("dsd", "drawHorizontal, childCount=" + childCount);
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
@@ -66,7 +66,7 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
 
     private void drawVertical(Canvas c, RecyclerView parent) {
         int childCount = parent.getChildCount();
-        Log.d("dsd", "drawVertical, childCount=" + childCount);
+//        Log.d("dsd", "drawVertical, childCount=" + childCount);
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
@@ -150,13 +150,13 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         final int columnCount = getColumnCount(parent);
         final int childCount = parent.getAdapter().getItemCount();
         final int pos = parent.getChildAdapterPosition(view);
-        Log.e("dsd", "当前item，pos=" + pos);
+//        Log.e("dsd", "当前item，pos=" + pos);
         if (isLastColumn(parent, childCount, columnCount, pos)) {
-            Log.e("dsd", "是 最后一列");
+//            Log.e("dsd", "是 最后一列");
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
 
         } else if (isLastRow(parent, childCount, columnCount, pos)) {
-            Log.e("dsd", "是 最后一行");
+//            Log.e("dsd", "是 最后一行");
             outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
 
         } else {

@@ -23,7 +23,7 @@
         <activity android:name="com.kc.activity.RxJavaExampleActivity">
         </activity>
         <activity android:name="com.kc.activity.RetrofitExampleActivity" />
-        <activity android:name="com.kc.activity.RecyclerViewTest">
+        <activity android:name="com.kc.activity.RecyclerViewTestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
