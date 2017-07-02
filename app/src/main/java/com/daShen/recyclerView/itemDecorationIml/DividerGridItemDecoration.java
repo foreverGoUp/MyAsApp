@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -58,6 +59,10 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
             final int right = child.getRight() + params.rightMargin + mDivider.getIntrinsicWidth();
             final int top = child.getBottom() + params.bottomMargin;
             final int bottom = top + mDivider.getIntrinsicHeight();
+            if (i == 5) {
+                Log.e("dsd", "drawHorizontal,i=" + i + ",pos=" + parent.getChildAdapterPosition(child));
+                Log.e("sdd", "left=" + left + ",rt=" + right + ",top=" + top + ",bot=" + bottom);
+            }
 
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
@@ -74,6 +79,14 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
             final int right = left + mDivider.getIntrinsicWidth();
             final int top = child.getTop() - params.topMargin;
             final int bottom = child.getBottom() + params.bottomMargin;
+            if (i == 5 || i == 1) {
+                Log.e("dsd", "drawVertical,i=" + i + ",pos=" + parent.getChildAdapterPosition(child));
+                if (i == 5) {
+                    Log.e("dsd", "drawVertical,child.getRight()=" + child.getRight() + ",params.rightMargin=" + params.rightMargin);
+                }
+                Log.e("sdd", "left=" + left + ",rt=" + right + ",top=" + top + ",bot=" + bottom);
+            }
+
 
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
