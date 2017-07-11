@@ -9,7 +9,13 @@
     tools:context="com.kc.activity.ShowCsmViewActivity">
 
     <com.kc.custom.CsmDialView
-        android:id="@+id/cdv"
+        android:id="@+id/csmDialView"
         android:layout_width="200dp"
         android:layout_height="250dp" />
+
+    <com.kc.custom.CsmRadarView
+        android:id="@+id/csmRadarView"
+        android:layout_marginTop="@dimen/common_blank_nor"
+        android:layout_width="250dp"
+        android:layout_height="200dp" />
 </LinearLayout>
