@@ -41,7 +41,6 @@ public class CsmRadarView extends View {
 //                +",testDimenPixelSize="+testDimenPixelSize+"\n!!!!!");
 //        typedArray.recycle();
 
-
         mRotateAngle = 360 / mRoomNum;
 
         mCirclePaint = new Paint();
