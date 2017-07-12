@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="CsmRadarView">
+        <attr name="tesBoolean" format="boolean" />
+        <attr name="testDimen" format="dimension" />
+        <attr name="testString" format="string" />
+        <attr name="testInt" format="integer" />
+    </declare-styleable>
+
     <declare-styleable name="CircleImageView">
         <attr name="civ_border_width" format="dimension" />
         <attr name="civ_border_color" format="color" />

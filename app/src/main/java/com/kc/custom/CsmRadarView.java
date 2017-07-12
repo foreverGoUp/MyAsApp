@@ -24,10 +24,24 @@ public class CsmRadarView extends View {
 
     public CsmRadarView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context, attrs);
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs) {
+        //测试获取xml定义的属性
+//        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CsmRadarView);
+//        int testInt = typedArray.getInt(R.styleable.CsmRadarView_testInt, 404);
+//        String testString = typedArray.getString(R.styleable.CsmRadarView_testString);
+//        boolean testBoolean = typedArray.getBoolean(R.styleable.CsmRadarView_tesBoolean, false);
+//        int testDimenPixelOffset = typedArray.getDimensionPixelOffset(R.styleable.CsmRadarView_testDimen, 404);
+//        float testDimen = typedArray.getDimension(R.styleable.CsmRadarView_testDimen, 404);
+//        int testDimenPixelSize = typedArray.getDimensionPixelSize(R.styleable.CsmRadarView_testDimen, 404);
+//        Log.e("test", "!!!!!\ntestInt="+testInt+",testString="+testString+",testBoolean="+testBoolean
+//                +",testDimenPixelOffset="+testDimenPixelOffset+",testDimen="+testDimen
+//                +",testDimenPixelSize="+testDimenPixelSize+"\n!!!!!");
+//        typedArray.recycle();
+
+
         mRotateAngle = 360 / mRoomNum;
 
         mCirclePaint = new Paint();
