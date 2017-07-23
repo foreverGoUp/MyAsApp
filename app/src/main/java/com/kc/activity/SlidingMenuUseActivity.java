@@ -41,6 +41,7 @@ public class SlidingMenuUseActivity extends BaseActivity implements BinarySlidin
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, list);
         mLvLeftMenu.setAdapter(adapter);
+
 //        ListView lvContent = getViewById(R.id.list);
 //        lvContent.setAdapter(adapter);
 //        lvContent.setOnItemClickListener(this);
