@@ -18,6 +18,7 @@ public class CsmRadarView extends View {
     private final int mCircleNum = 4;
     //    private int mWidth = 400;
 //    private int mHeight = 400;
+
     private float mRadius = 0;
     private float mOriginCircleRadius;//原点圆半径
     private float mPadding = 60;
