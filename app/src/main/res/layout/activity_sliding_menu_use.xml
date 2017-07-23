@@ -1,0 +1,47 @@
+<com.daShen.SlidingMenu.BinarySlidingMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:zhy="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/id_menu"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    zhy:rightPadding="100dp">
+
+    <com.daShen.SlidingMenu.MyLinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <include layout="@layout/include_sliding_menu_left_menu" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/sliding_menu_content_bg"
+                android:scaleType="centerCrop" />
+            <!--<ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </ListView>-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#80ff0000"
+                android:text="Content"
+                android:textColor="#fff"
+                android:textSize="100dp" />
+        </RelativeLayout>
+        <!--<RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80ff0000">
+        </RelativeLayout>-->
+    </com.daShen.SlidingMenu.MyLinearLayout>
+
+</com.daShen.SlidingMenu.BinarySlidingMenu>

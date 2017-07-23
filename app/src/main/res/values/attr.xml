@@ -22,4 +22,8 @@
         <attr name="item_count" />
         <attr name="item_magnification" />
     </declare-styleable>
+
+    <declare-styleable name="BinarySlidingMenu">
+        <attr name="rightPadding" format="dimension" />
+    </declare-styleable>
 </resources>
