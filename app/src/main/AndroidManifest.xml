@@ -16,6 +16,11 @@
         android:theme="@style/AppTheme">
         <activity android:name="com.kc.activity.PullParserTestActivity" />
         <activity android:name="com.kc.activity.ShowCsmViewActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name="com.kc.activity.TestActivity" />
         <activity android:name="com.kc.activity.PermissionTestActivity" />
@@ -25,11 +30,6 @@
         <activity android:name="com.kc.activity.RetrofitExampleActivity" />
         <activity android:name="com.kc.activity.RecyclerViewTestActivity"></activity>
         <activity android:name="com.kc.activity.SlidingMenuUseActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
