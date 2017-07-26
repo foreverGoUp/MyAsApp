@@ -2,16 +2,16 @@ package com.kc.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.kc.base.BaseActivity;
 import com.kc.custom.CsmDialView;
 import com.kc.custom.CsmRadarView;
 import com.kc.myasapp.R;
 
-public class ShowCsmViewActivity extends AppCompatActivity implements CsmDialView.OnCsmDialViewColorChanged
+public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnCsmDialViewColorChanged
         , View.OnClickListener {
 
     private static final String TAG = "ShowCsmViewActivity";
@@ -31,6 +31,12 @@ public class ShowCsmViewActivity extends AppCompatActivity implements CsmDialVie
         view.setListener(this);
         //雷达图
         CsmRadarView csmRadarView = (CsmRadarView) findViewById(R.id.csmRadarView);
+        csmRadarView.setListener(new CsmRadarView.OnCsmRadarViewClickListener() {
+            @Override
+            public void onCsmRadarViewClick(int pos, int roomId) {
+                showToast("点击了pos=" + pos);
+            }
+        });
 
         //以下格式中的2表示字符串至少占2位，若只要一位则空格补前
 //        String format = "%2d";
@@ -42,16 +48,36 @@ public class ShowCsmViewActivity extends AppCompatActivity implements CsmDialVie
     }
 
     @Override
+    protected void initUI() {
+
+    }
+
+    @Override
+    protected void init() {
+
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
     public void onCsmDialViewColorChanged(int red, int green) {
         mContainer.setBackgroundColor(Color.argb(100, red, green, 0));
     }
 
+    private int count = 0;
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.csmDialView:
                 ((CsmDialView) view).startAnimation(250);
                 test();
+                break;
+            case R.id.csmButton:
+                count++;
+                showToast("点击了," + count);
                 break;
         }
     }

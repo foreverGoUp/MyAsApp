@@ -1,28 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/llayout_show_csm_view_container"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:kc="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    tools:context="com.kc.activity.ShowCsmViewActivity">
+    android:layout_height="match_parent">
 
-    <com.kc.custom.CsmDialView
-        android:id="@+id/csmDialView"
-        android:layout_width="200dp"
-        android:layout_height="250dp" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:kc="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/llayout_show_csm_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:context="com.kc.activity.ShowCsmViewActivity">
 
-    <com.kc.custom.CsmRadarView
-        android:id="@+id/csmRadarView"
-        kc:tesBoolean="true"
-        kc:testDimen="20dp"
-        kc:testInt="5"
-        kc:testString="kcccc"
-        android:background="#80ff0000"
-        android:layout_marginTop="@dimen/common_blank_nor"
-        android:layout_width="250dp"
-        android:layout_height="200dp"
-        android:padding="10dp" />
-</LinearLayout>
+        <com.kc.custom.CsmDialView
+            android:id="@+id/csmDialView"
+            android:layout_width="200dp"
+            android:layout_height="250dp" />
+
+        <com.kc.custom.CsmRadarView
+            android:id="@+id/csmRadarView"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/common_blank_nor"
+            android:background="#80ff0000"
+            android:padding="10dp"
+            kc:tesBoolean="true"
+            kc:testDimen="20dp"
+            kc:testInt="5"
+            kc:testString="kcccc" />
+
+        <com.kc.custom.test.CsmButton
+            android:id="@+id/csmButton"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="测试点击事件" />
+    </LinearLayout>
+</ScrollView>
