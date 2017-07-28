@@ -20,6 +20,7 @@ import com.kc.util.SizeUtils;
  */
 public class CsmRadarView extends View implements GestureDetector.OnGestureListener {
 
+
     private static final String TAG = "CsmRadarView";
     private final int mCircleNum = 4;
     private GestureDetector mGestureDetector = new GestureDetector(getContext(), this);
