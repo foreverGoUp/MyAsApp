@@ -13,6 +13,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.kc.util.SizeUtils;
+
 /**
  * Created by ckc on 2017/7/11.
  */
@@ -23,10 +25,11 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private GestureDetector mGestureDetector = new GestureDetector(getContext(), this);
     private OnCsmRadarViewClickListener mListener;
     private Canvas mCanvas;
+    private float mWidth;
 
     private float mRadius = 0;
     private float mOriginCircleRadius;//原点圆半径
-    private float mPadding = 60;
+    //    private float mPadding = 60;
     private PointF mCenterPoint;
 
     private Paint mCirclePaint, mOriginCirclePaint, mTextPaint;
@@ -35,7 +38,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private int mRoomNum = 6;
     private float mRotateAngle;
     private float[] mLocations = new float[16];
-    private String[] mRoomNames = new String[]{"卧室", "客厅", "厨房", "卧室q", "客厅s", "厨房s"};
+    private String[] mRoomNames = new String[]{"卧室", "一楼客厅", "二楼厨房", "卧室", "我的客厅", "厨房s"};
 
     //样式
     private int mPressedTextColor = Color.RED;
@@ -79,28 +82,45 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 //        mTextPaint.setARGB(255, 0, 0, 255);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setTextSize(40f);
+
+        mCenterPoint = new PointF();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        final int width = MeasureSpec.getSize(widthMeasureSpec);
-        mRadius = (width - mPadding * 2) / 2;
-        mCenterPoint = new PointF(mPadding + mRadius, mPadding + mRadius);
-        mOriginCircleRadius = mRadius / 10;
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST) {
+            width = SizeUtils.dp2px(getContext(), 200);
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            width = height;
+        }
+        mWidth = width;
         setMeasuredDimension(width, width);
+
+//                mRadius = (width - mPadding * 2) / 2;
+//        mCenterPoint = new PointF(mPadding + mRadius, mPadding + mRadius);
+//        mOriginCircleRadius = mRadius / 10;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mCanvas = canvas;
+        calculateRadius();
+//        mCanvas = canvas;
         drawCircle(canvas);
         drawLine(canvas);
         drawText(canvas);
     }
 
-    private void drawText(Canvas canvas) {
+    private void calculateRadius() {
+        mRadius = mWidth / 4;//假设为1/4宽度
+        mCenterPoint.x = mCenterPoint.y = mWidth / 2;
+        Log.e(TAG, "calculateRadius: before,center x=" + mCenterPoint.x + ",center y=" + mCenterPoint.y + ",r=" + mRadius);
+
         Rect rect = new Rect();
         double step = 2 * Math.PI / mRoomNum;
         double angle = -Math.PI / 2;
@@ -117,22 +137,111 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
                 }
             } else if (x > mCenterPoint.x) {
                 x += rect.width() / 2;
-                y += rect.height() / 2;
+                if (y > mCenterPoint.y) {
+                    y += rect.height() / 2;
+                } else if (y < mCenterPoint.y) {
+                    y -= rect.height() / 2;
+                }
             } else {
                 x -= rect.width() / 2;
-                y += rect.height() / 2;
+                if (y > mCenterPoint.y) {
+                    y += rect.height() / 2;
+                } else if (y < mCenterPoint.y) {
+                    y -= rect.height() / 2;
+                }
+            }
+
+            mLocations[i * 2] = x;
+            mLocations[i * 2 + 1] = y;
+            angle += step;
+        }
+
+
+        int minXPos = 0;
+        int maxXPos = 0;
+        Rect rect2 = new Rect();
+        mTextPaint.getTextBounds(mRoomNames[0], 0, mRoomNames[0].length(), rect2);
+        float minX = mLocations[0] - rect2.width() / 2;
+        float maxX = mLocations[0] + rect2.width() / 2;
+        for (int i = 1; i < mRoomNum; i++) {
+            mTextPaint.getTextBounds(mRoomNames[i], 0, mRoomNames[i].length(), rect2);
+            //选出最小
+            float x = mLocations[i * 2] - rect2.width() / 2;
+            if (x < minX) {
+                minX = x;
+                minXPos = i;
+            }
+            //选出最大
+            x = mLocations[i * 2] + rect2.width() / 2;
+            if (x > maxX) {
+                maxX = x;
+                maxXPos = i;
+            }
+        }
+        int selPos = 0;
+        if ((mCenterPoint.x - minX) >= (maxX - mCenterPoint.x)) {
+            selPos = minXPos;
+        } else {
+            selPos = maxXPos;
+        }
+        //开始计算半径
+        mTextPaint.getTextBounds(mRoomNames[selPos], 0, mRoomNames[selPos].length(), rect2);
+        mRadius = mWidth / 2 - getPaddingLeft() - rect2.width();
+        mOriginCircleRadius = mRadius / 10;
+        Log.e(TAG, "calculateRadius: after,r=" + mRadius);
+
+//        mTextPaint.getTextBounds(mRoomNames[0], 0, mRoomNames[0].length(), rect2);
+//        float maxX = mLocations[0] + rect2.width()/2;//第一个for赋值最小的x，第二个for赋值最大的x
+//        //选出坐标x最大的位置
+//        for (int i = 1; i < mRoomNum; i++) {
+//            mTextPaint.getTextBounds(mRoomNames[i], 0, mRoomNames[i].length(), rect2);
+//            float x = mLocations[i*2] + rect2.width()/2;
+//            maxX = maxX >= x ? maxX : x;
+//        }
+    }
+
+    private void drawText(Canvas canvas) {
+        Rect rect = new Rect();
+        double step = 2 * Math.PI / mRoomNum;
+        double angle = -Math.PI / 2;
+        for (int i = 0; i < mRoomNum; i++) {
+            float x = mCenterPoint.x + mRadius * (float) Math.cos(angle);
+            float y = mCenterPoint.y + mRadius * (float) Math.sin(angle);
+            Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
+            mTextPaint.getTextBounds(mRoomNames[i], 0, mRoomNames[i].length(), rect);
+            if (x == mCenterPoint.x) {
+                if (y > mCenterPoint.y) {
+                    y += rect.height();
+                } else {
+                    y -= rect.height();
+                }
+            } else if (x > mCenterPoint.x) {
+                x += rect.width() / 2;
+                if (y > mCenterPoint.y) {
+                    y += rect.height() / 2;
+                } else if (y < mCenterPoint.y) {
+                    y -= rect.height() / 2;
+                }
+            } else {
+                x -= rect.width() / 2;
+                if (y > mCenterPoint.y) {
+                    y += rect.height() / 2;
+                } else if (y < mCenterPoint.y) {
+                    y -= rect.height() / 2;
+                }
             }
             mLocations[i * 2] = x;
             mLocations[i * 2 + 1] = y;
             angle += step;
         }
         for (int i = 0; i < mRoomNum; i++) {
-            if (mLastPressPos == i) {
-                mTextPaint.setColor(mPressedTextColor);
-            } else {
-                mTextPaint.setColor(mNormalTextColor);
-            }
+//            if (mLastPressPos == i) {
+//                mTextPaint.setColor(mPressedTextColor);
+//            } else {
+//                mTextPaint.setColor(mNormalTextColor);
+//            }
             canvas.drawText(mRoomNames[i], mLocations[i * 2], mLocations[i * 2 + 1], mTextPaint);
+//            canvas.drawCircle(mLocations[i * 2], mLocations[i * 2 + 1], mOriginCircleRadius, mOriginCirclePaint);
         }
     }
 
@@ -188,7 +297,9 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
         mTextPaint.setColor(mPressedTextColor);
+        mCanvas.save();
         mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
+        mCanvas.restore();
     }
 
     private void fingerFarFromOne() {
@@ -200,7 +311,9 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
         mTextPaint.setColor(mNormalTextColor);
+        mCanvas.save();
         mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
+        mCanvas.restore();
     }
 
     private Path mLinePath = new Path();
@@ -238,36 +351,36 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        drawLineFollowFinger(event);
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
-                final int pos = isClickedOne(event);
-                if (pos != -1 && pos != mLastPressPos) {
-                    Log.e(TAG, "onTouchEvent: ACTION_DOWN手指按压名称区域:" + pos);
-//                    invalidate();
-                    fingerPressOne(pos);
-                }
-                break;
-            }
-            case MotionEvent.ACTION_MOVE: {
-                final int pos = isClickedOne(event);
-                if (mLastPressPos != -1 && (pos == -1 || pos != mLastPressPos)) {
-                    Log.e(TAG, "onTouchEvent: ACTION_MOVE手指离开名称区域");
-                    fingerFarFromOne();
-//                    invalidate();
-                }
-                break;
-            }
-            case MotionEvent.ACTION_UP: {
-                if (mLastPressPos != -1) {
-                    Log.e(TAG, "onTouchEvent: ACTION_UP手指离开名称区域");
-                    fingerFarFromOne();
-//                    invalidate();
-                }
-                break;
-            }
-        }
+//        drawLineFollowFinger(event);
+        //按压文字变色
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN: {
+//                final int pos = isClickedOne(event);
+//                if (pos != -1 && pos != mLastPressPos) {
+//                    Log.e(TAG, "onTouchEvent: ACTION_DOWN手指按压名称区域:" + pos);
+//                    fingerPressOne(pos);
+////                    invalidate();
+//                }
+//                break;
+//            }
+//            case MotionEvent.ACTION_MOVE: {
+//                final int pos = isClickedOne(event);
+//                if (mLastPressPos != -1 && (pos == -1 || pos != mLastPressPos)) {
+//                    Log.e(TAG, "onTouchEvent: ACTION_MOVE手指离开名称区域");
+//                    fingerFarFromOne();
+////                    invalidate();
+//                }
+//                break;
+//            }
+//            case MotionEvent.ACTION_UP: {
+//                if (mLastPressPos != -1) {
+//                    Log.e(TAG, "onTouchEvent: ACTION_UP手指离开名称区域");
+//                    fingerFarFromOne();
+////                    invalidate();
+//                }
+//                break;
+//            }
+//        }
         return mGestureDetector.onTouchEvent(event);
     }
 
