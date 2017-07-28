@@ -36,10 +36,10 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private Paint mCirclePaint, mOriginCirclePaint, mTextPaint;
     private float mTextSize = 40;
 
-    private int mRoomNum = 6;
+    private int mRoomNum = 8;
     private float mRotateAngle;
     private float[] mLocations = new float[16];
-    private String[] mRoomNames = new String[]{"卧室", "一楼客厅", "二楼厨房", "卧室", "我的客厅", "厨房s"};
+    private String[] mRoomNames = new String[]{"卧室", "一楼客厅", "二楼厨房", "二楼卧室", "二楼大卧室", "厨房s", "二楼大卧室", "厨房s"};
 
     //样式
     private int mPressedTextColor = Color.RED;
@@ -190,15 +190,6 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         mRadius = mWidth / 2 - getPaddingLeft() - rect2.width();
         mOriginCircleRadius = mRadius / 10;
         Log.e(TAG, "calculateRadius: after,r=" + mRadius);
-
-//        mTextPaint.getTextBounds(mRoomNames[0], 0, mRoomNames[0].length(), rect2);
-//        float maxX = mLocations[0] + rect2.width()/2;//第一个for赋值最小的x，第二个for赋值最大的x
-//        //选出坐标x最大的位置
-//        for (int i = 1; i < mRoomNum; i++) {
-//            mTextPaint.getTextBounds(mRoomNames[i], 0, mRoomNames[i].length(), rect2);
-//            float x = mLocations[i*2] + rect2.width()/2;
-//            maxX = maxX >= x ? maxX : x;
-//        }
     }
 
     private void drawText(Canvas canvas) {
@@ -232,7 +223,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
                 }
             }
             mLocations[i * 2] = x;
-            mLocations[i * 2 + 1] = y;
+            mLocations[i * 2 + 1] = y + rect.height() / 2;//所有文本下移半个文本高度
             angle += step;
         }
         for (int i = 0; i < mRoomNum; i++) {
