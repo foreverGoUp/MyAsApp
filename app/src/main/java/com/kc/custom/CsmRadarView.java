@@ -17,6 +17,19 @@ import com.kc.util.SizeUtils;
 
 /**
  * Created by ckc on 2017/7/11.
+ * 定义：第0个房间总是位于view的垂直中分线上方。
+ *
+ *
+ * 功能：
+ * 1、可处理xml中定义的宽高、padding、paddingLeft
+ * 2、可根据文本长度动态变化雷达半径
+ * 3、中文文本长度（length）至少支持5.
+ * 4、点击某个房间名称可回调该房间在列表的位置和id。
+ *
+ * 待增加功能
+ * 1、按压文本变色
+ * 2、趣味性：雷达跟随手指旋转，放开回旋至默认位置。
+ *
  */
 public class CsmRadarView extends View implements GestureDetector.OnGestureListener {
 
@@ -34,12 +47,12 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private PointF mCenterPoint;
 
     private Paint mCirclePaint, mOriginCirclePaint, mTextPaint;
-    private float mTextSize = 40;
+    private float mTextSize = SizeUtils.dp2px(getContext(), 15);
 
-    private int mRoomNum = 8;
+    private int mRoomNum = 1;
     private float mRotateAngle;
     private float[] mLocations = new float[16];
-    private String[] mRoomNames = new String[]{"卧室", "一楼客厅", "二楼厨房", "二楼卧室", "二楼大卧室", "厨房s", "二楼大卧室", "厨房s"};
+    private String[] mRoomNames = new String[]{"二楼大卧室", "二楼一楼厅", "二楼厨房二", "二二楼卧室", "二楼大卧室", "楼大卧室厨房", "二楼大卧室", "二楼大厨房"};
 
     //样式
     private int mPressedTextColor = Color.RED;
@@ -64,17 +77,20 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 //                +",testDimenPixelSize="+testDimenPixelSize+"\n!!!!!");
 //        typedArray.recycle();
 
+        mCenterPoint = new PointF();
+
         mRotateAngle = 360 / mRoomNum;
 
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
         mCirclePaint.setStyle(Paint.Style.STROKE);
-        mCirclePaint.setARGB(255, 0, 0, 0);
+        mCirclePaint.setColor(Color.WHITE);
 
         mOriginCirclePaint = new Paint();
         mOriginCirclePaint.setAntiAlias(true);
         mOriginCirclePaint.setStyle(Paint.Style.FILL);
-        mOriginCirclePaint.setARGB(100, 0, 0, 0);
+        mOriginCirclePaint.setColor(Color.WHITE);
+        mOriginCirclePaint.setAlpha(125);
 
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
@@ -82,9 +98,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         mTextPaint.setColor(mNormalTextColor);
 //        mTextPaint.setARGB(255, 0, 0, 255);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-        mTextPaint.setTextSize(40f);
-
-        mCenterPoint = new PointF();
+        mTextPaint.setTextSize(mTextSize);
     }
 
     @Override
@@ -101,10 +115,6 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         }
         mWidth = width;
         setMeasuredDimension(width, width);
-
-//                mRadius = (width - mPadding * 2) / 2;
-//        mCenterPoint = new PointF(mPadding + mRadius, mPadding + mRadius);
-//        mOriginCircleRadius = mRadius / 10;
     }
 
     @Override
@@ -117,6 +127,17 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         drawText(canvas);
     }
 
+    /**
+     * 计算半径
+     * <p>
+     * 思路：确定任意一个半径，比如设置画布宽度的1/4。
+     * 先以此半径计算每个文本的坐标。
+     * 利用Rect获得每个文本的宽高。
+     * 获得x坐标最小的文本位置和x坐标最大的文本位置
+     * 比较minX到圆心x的绝对值和maxX到圆心x的绝对值的大小
+     * 获得绝对值较大的相应的文本位置对应的文本为最压缩水平半径的文本。
+     * 计算得到半径=画布宽度/2-paddingLeft-文本宽度。
+     */
     private void calculateRadius() {
         mRadius = mWidth / 4;//假设为1/4宽度
         mCenterPoint.x = mCenterPoint.y = mWidth / 2;
