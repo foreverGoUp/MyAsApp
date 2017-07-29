@@ -141,7 +141,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private void calculateRadius() {
         mRadius = mWidth / 4;//假设为1/4宽度
         mCenterPoint.x = mCenterPoint.y = mWidth / 2;
-        Log.e(TAG, "calculateRadius: before,center x=" + mCenterPoint.x + ",center y=" + mCenterPoint.y + ",r=" + mRadius);
+//        Log.e(TAG, "calculateRadius: before,center x=" + mCenterPoint.x + ",center y=" + mCenterPoint.y + ",r=" + mRadius);
 
         Rect rect = new Rect();
         double step = 2 * Math.PI / mRoomNum;
@@ -210,7 +210,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         mTextPaint.getTextBounds(mRoomNames[selPos], 0, mRoomNames[selPos].length(), rect2);
         mRadius = mWidth / 2 - getPaddingLeft() - rect2.width();
         mOriginCircleRadius = mRadius / 10;
-        Log.e(TAG, "calculateRadius: after,r=" + mRadius);
+//        Log.e(TAG, "calculateRadius: after,r=" + mRadius);
     }
 
     private void drawText(Canvas canvas) {
@@ -220,7 +220,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         for (int i = 0; i < mRoomNum; i++) {
             float x = mCenterPoint.x + mRadius * (float) Math.cos(angle);
             float y = mCenterPoint.y + mRadius * (float) Math.sin(angle);
-            Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
+//            Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
             mTextPaint.getTextBounds(mRoomNames[i], 0, mRoomNames[i].length(), rect);
             if (x == mCenterPoint.x) {
                 if (y > mCenterPoint.y) {
@@ -248,11 +248,11 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
             angle += step;
         }
         for (int i = 0; i < mRoomNum; i++) {
-//            if (mLastPressPos == i) {
-//                mTextPaint.setColor(mPressedTextColor);
-//            } else {
-//                mTextPaint.setColor(mNormalTextColor);
-//            }
+            if (mLastPressPos == i) {
+                mTextPaint.setColor(mPressedTextColor);
+            } else {
+                mTextPaint.setColor(mNormalTextColor);
+            }
             canvas.drawText(mRoomNames[i], mLocations[i * 2], mLocations[i * 2 + 1], mTextPaint);
 //            canvas.drawCircle(mLocations[i * 2], mLocations[i * 2 + 1], mOriginCircleRadius, mOriginCirclePaint);
         }
@@ -366,34 +366,40 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     public boolean onTouchEvent(MotionEvent event) {
 //        drawLineFollowFinger(event);
         //按压文字变色
-//        switch (event.getAction()) {
-//            case MotionEvent.ACTION_DOWN: {
-//                final int pos = isClickedOne(event);
-//                if (pos != -1 && pos != mLastPressPos) {
-//                    Log.e(TAG, "onTouchEvent: ACTION_DOWN手指按压名称区域:" + pos);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                final int pos = isClickedOne(event);
+                if (pos != -1 && pos != mLastPressPos) {
+                    Log.e(TAG, "onTouchEvent: ACTION_DOWN手指按压名称区域:" + pos);
 //                    fingerPressOne(pos);
-////                    invalidate();
-//                }
-//                break;
-//            }
-//            case MotionEvent.ACTION_MOVE: {
-//                final int pos = isClickedOne(event);
+                    mLastPressPos = pos;
+                    invalidate();
+                }
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                final int pos = isClickedOne(event);
+                Log.e(TAG, "onTouchEvent: ACTION_MOVE，pos=" + pos + ",mLastPressPos=" + mLastPressPos);
+                if (mLastPressPos != -1) {//手指在文字上移动直接恢复原色
+                    // 手指在文字上移动保持按压色，移到文字外恢复原色，有50%概率不正常。
 //                if (mLastPressPos != -1 && (pos == -1 || pos != mLastPressPos)) {
-//                    Log.e(TAG, "onTouchEvent: ACTION_MOVE手指离开名称区域");
+                    Log.e(TAG, "onTouchEvent: ACTION_MOVE手指离开名称区域");
 //                    fingerFarFromOne();
-////                    invalidate();
-//                }
-//                break;
-//            }
-//            case MotionEvent.ACTION_UP: {
-//                if (mLastPressPos != -1) {
-//                    Log.e(TAG, "onTouchEvent: ACTION_UP手指离开名称区域");
+                    mLastPressPos = -1;
+                    invalidate();
+                }
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                if (mLastPressPos != -1) {
+                    Log.e(TAG, "onTouchEvent: ACTION_UP手指离开名称区域");
 //                    fingerFarFromOne();
-////                    invalidate();
-//                }
-//                break;
-//            }
-//        }
+                    mLastPressPos = -1;
+                    invalidate();
+                }
+                break;
+            }
+        }
         return mGestureDetector.onTouchEvent(event);
     }
 
