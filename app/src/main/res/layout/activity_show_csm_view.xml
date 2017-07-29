@@ -24,10 +24,11 @@
             android:layout_height="200dp"
             android:layout_marginTop="@dimen/common_blank_nor"
             android:background="#80ff0000"
-            kc:tesBoolean="true"
-            kc:testDimen="20dp"
-            kc:testInt="5"
-            kc:testString="kcccc" />
+            kc:textColor="#0000ff"
+            kc:pressTextColor="#ffffff"
+            kc:radarLineColor="#00ff00"
+            kc:scoreLineColor="#ff0000"
+            kc:textSize="10dp" />
 
         <com.kc.custom.test.CsmButton
             android:id="@+id/csmButton"

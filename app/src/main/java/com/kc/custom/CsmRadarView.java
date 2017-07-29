@@ -1,6 +1,7 @@
 package com.kc.custom;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +14,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.kc.myasapp.R;
 import com.kc.util.SizeUtils;
 
 import java.util.HashMap;
@@ -30,10 +32,11 @@ import java.util.Random;
  * 3、中文文本长度（length）至少支持5.
  * 4、点击某个房间名称可回调该房间在列表的位置和id。
  * 5、按压文本变色
+ * 6、动态改变分数数值显示。
  *
  *
  * 待增加功能
- * 1、动态改变分数数值显示。
+ * 1、增加xml定义属性和公共接口
  * 2、趣味性：雷达跟随手指旋转，放开回旋至默认位置。
  *
  */
@@ -47,13 +50,20 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private Canvas mCanvas;
     private float mWidth;
 
+    //xml初始化的属性
+    private int mRadarLineColor = Color.WHITE;
+    private int mScoreLineColor = Color.YELLOW;
+    private int mPressTextColor = Color.RED;
+    private int mTextColor = Color.WHITE;
+    private float mTextSize = SizeUtils.dp2px(getContext(), 15);
+
     private float mRadius = 0;
     private float mOriginCircleRadius;//原点圆半径
     //    private float mPadding = 60;
     private PointF mCenterPoint;
 
     private Paint mCirclePaint, mOriginCirclePaint, mTextPaint, mScoreLinesPaint;
-    private float mTextSize = SizeUtils.dp2px(getContext(), 15);
+
 
     private int mRoomNum = 7;
     private float mRotateAngle;
@@ -61,9 +71,6 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private String[] mRoomNames = new String[]{"二楼大卧室", "二楼一楼厅", "二楼厨房二", "二二楼卧室", "二楼大卧室", "楼大卧室厨房", "二楼大卧室", "二楼大厨房"};
     private Map<Integer, Integer> mRoomScoreMap = new HashMap<>(8);//最大支持显示房间数量
 
-    //样式
-    private int mPressedTextColor = Color.RED;
-    private int mNormalTextColor = Color.WHITE;
 
     public CsmRadarView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -80,7 +87,13 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
     private void init(Context context, AttributeSet attrs) {
         //测试获取xml定义的属性
-//        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CsmRadarView);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CsmRadarView);
+        mTextColor = typedArray.getInt(R.styleable.CsmRadarView_textColor, mTextColor);
+        mPressTextColor = typedArray.getInt(R.styleable.CsmRadarView_pressTextColor, mPressTextColor);
+        mRadarLineColor = typedArray.getInt(R.styleable.CsmRadarView_radarLineColor, mRadarLineColor);
+        mScoreLineColor = typedArray.getInt(R.styleable.CsmRadarView_scoreLineColor, mScoreLineColor);
+        mTextSize = typedArray.getDimension(R.styleable.CsmRadarView_textSize, mTextSize);
+
 //        int testInt = typedArray.getInt(R.styleable.CsmRadarView_testInt, 404);
 //        String testString = typedArray.getString(R.styleable.CsmRadarView_testString);
 //        boolean testBoolean = typedArray.getBoolean(R.styleable.CsmRadarView_tesBoolean, false);
@@ -90,31 +103,31 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 //        Log.e("test", "!!!!!\ntestInt="+testInt+",testString="+testString+",testBoolean="+testBoolean
 //                +",testDimenPixelOffset="+testDimenPixelOffset+",testDimen="+testDimen
 //                +",testDimenPixelSize="+testDimenPixelSize+"\n!!!!!");
-//        typedArray.recycle();
+        typedArray.recycle();
 
         mCenterPoint = new PointF();
 
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
         mCirclePaint.setStyle(Paint.Style.STROKE);
-        mCirclePaint.setColor(Color.WHITE);
+        mCirclePaint.setColor(mRadarLineColor);
 
         mScoreLinesPaint = new Paint();
         mScoreLinesPaint.setAntiAlias(true);
         mScoreLinesPaint.setStyle(Paint.Style.STROKE);
         mScoreLinesPaint.setStrokeWidth(SizeUtils.dp2px(getContext(), 3));
-        mScoreLinesPaint.setColor(Color.YELLOW);
+        mScoreLinesPaint.setColor(mScoreLineColor);
 
         mOriginCirclePaint = new Paint();
         mOriginCirclePaint.setAntiAlias(true);
         mOriginCirclePaint.setStyle(Paint.Style.FILL);
-        mOriginCirclePaint.setColor(Color.WHITE);
+        mOriginCirclePaint.setColor(mRadarLineColor);
         mOriginCirclePaint.setAlpha(125);
 
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setStyle(Paint.Style.STROKE);
-        mTextPaint.setColor(mNormalTextColor);
+        mTextPaint.setColor(mTextColor);
 //        mTextPaint.setARGB(255, 0, 0, 255);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setTextSize(mTextSize);
@@ -292,9 +305,9 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         }
         for (int i = 0; i < mRoomNum; i++) {
             if (mLastPressPos == i) {
-                mTextPaint.setColor(mPressedTextColor);
+                mTextPaint.setColor(mPressTextColor);
             } else {
-                mTextPaint.setColor(mNormalTextColor);
+                mTextPaint.setColor(mTextColor);
             }
             canvas.drawText(mRoomNames[i], mLocations[i * 2], mLocations[i * 2 + 1], mTextPaint);
 //            canvas.drawCircle(mLocations[i * 2], mLocations[i * 2 + 1], mOriginCircleRadius, mOriginCirclePaint);
@@ -353,7 +366,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
-        mTextPaint.setColor(mPressedTextColor);
+        mTextPaint.setColor(mPressTextColor);
         mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
     }
 
@@ -365,7 +378,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         mLastPressPos = -1;
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
-        mTextPaint.setColor(mNormalTextColor);
+        mTextPaint.setColor(mTextColor);
         mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
     }
 
@@ -404,6 +417,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        //使onClick回调生效
         super.onTouchEvent(event);
 //        drawLineFollowFinger(event);
         //按压文字变色
