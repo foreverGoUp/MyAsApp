@@ -50,7 +50,6 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private Canvas mCanvas;
     private float mWidth;
 
-
     //xml初始化的属性
     private int mRadarLineColor = Color.WHITE;
     private int mScoreLineColor = Color.YELLOW;
