@@ -59,7 +59,6 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
     private float mRadius = 0;
     private float mOriginCircleRadius;//原点圆半径
-    //    private float mPadding = 60;
     private PointF mCenterPoint;
 
     private Paint mCirclePaint, mOriginCirclePaint, mTextPaint, mScoreLinesPaint;
@@ -152,8 +151,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        calculateRadius();
 //        mCanvas = canvas;
+        calculateRadius();
         drawCircle(canvas);
         drawLine(canvas);
         drawText(canvas);
@@ -358,6 +357,10 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         return pos;
     }
 
+    /**
+     * 手指按压某个文本时调用
+     * 停用：效果不稳定
+     */
     private void fingerPressOne(int pos) {
         if (pos == -1 || pos > mRoomNum - 1) {
             return;
@@ -370,6 +373,10 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
     }
 
+    /**
+     * 手指不在之前按压的文本范围内移动或抬起动作时调用
+     * 停用：效果不稳定
+     */
     private void fingerFarFromOne() {
         if (mLastPressPos == -1 || mLastPressPos > mRoomNum - 1) {
             return;
