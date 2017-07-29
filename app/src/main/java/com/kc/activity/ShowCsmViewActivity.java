@@ -17,6 +17,7 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     private static final String TAG = "ShowCsmViewActivity";
 
     private LinearLayout mContainer;
+    private CsmRadarView mCsmRadarView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +31,14 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
         view.setOnClickListener(this);
         view.setListener(this);
         //雷达图
-        CsmRadarView csmRadarView = (CsmRadarView) findViewById(R.id.csmRadarView);
-        csmRadarView.setListener(new CsmRadarView.OnCsmRadarViewClickListener() {
+        mCsmRadarView = (CsmRadarView) findViewById(R.id.csmRadarView);
+        mCsmRadarView.setListener(new CsmRadarView.OnCsmRadarViewClickListener() {
             @Override
             public void onCsmRadarViewClick(int pos, int roomId) {
                 showToast("点击了pos=" + pos);
             }
         });
+        mCsmRadarView.setOnClickListener(this);
 
         //以下格式中的2表示字符串至少占2位，若只要一位则空格补前
 //        String format = "%2d";
@@ -78,6 +80,9 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
             case R.id.csmButton:
                 count++;
                 showToast("点击了," + count);
+                break;
+            case R.id.csmRadarView:
+                mCsmRadarView.refreshScore();
                 break;
         }
     }

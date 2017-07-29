@@ -15,6 +15,10 @@ import android.view.View;
 
 import com.kc.util.SizeUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
 /**
  * Created by ckc on 2017/7/11.
  * 定义：第0个房间总是位于view的垂直中分线上方。
@@ -25,9 +29,11 @@ import com.kc.util.SizeUtils;
  * 2、可根据文本长度动态变化雷达半径
  * 3、中文文本长度（length）至少支持5.
  * 4、点击某个房间名称可回调该房间在列表的位置和id。
+ * 5、按压文本变色
+ *
  *
  * 待增加功能
- * 1、按压文本变色
+ * 1、动态改变分数数值显示。
  * 2、趣味性：雷达跟随手指旋转，放开回旋至默认位置。
  *
  */
@@ -46,13 +52,14 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     //    private float mPadding = 60;
     private PointF mCenterPoint;
 
-    private Paint mCirclePaint, mOriginCirclePaint, mTextPaint;
+    private Paint mCirclePaint, mOriginCirclePaint, mTextPaint, mScoreLinesPaint;
     private float mTextSize = SizeUtils.dp2px(getContext(), 15);
 
-    private int mRoomNum = 1;
+    private int mRoomNum = 7;
     private float mRotateAngle;
-    private float[] mLocations = new float[16];
+    private float[] mLocations = new float[16];//最大支持显示房间数量
     private String[] mRoomNames = new String[]{"二楼大卧室", "二楼一楼厅", "二楼厨房二", "二二楼卧室", "二楼大卧室", "楼大卧室厨房", "二楼大卧室", "二楼大厨房"};
+    private Map<Integer, Integer> mRoomScoreMap = new HashMap<>(8);//最大支持显示房间数量
 
     //样式
     private int mPressedTextColor = Color.RED;
@@ -60,7 +67,15 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
     public CsmRadarView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initRoomScoreMap();
         init(context, attrs);
+    }
+
+    private void initRoomScoreMap() {
+        Random random = new Random();
+        for (int i = 0; i < mRoomNum; i++) {
+            mRoomScoreMap.put(i, random.nextInt(101));
+        }
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -79,12 +94,16 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
         mCenterPoint = new PointF();
 
-        mRotateAngle = 360 / mRoomNum;
-
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
         mCirclePaint.setStyle(Paint.Style.STROKE);
         mCirclePaint.setColor(Color.WHITE);
+
+        mScoreLinesPaint = new Paint();
+        mScoreLinesPaint.setAntiAlias(true);
+        mScoreLinesPaint.setStyle(Paint.Style.STROKE);
+        mScoreLinesPaint.setStrokeWidth(SizeUtils.dp2px(getContext(), 3));
+        mScoreLinesPaint.setColor(Color.YELLOW);
 
         mOriginCirclePaint = new Paint();
         mOriginCirclePaint.setAntiAlias(true);
@@ -125,6 +144,30 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         drawCircle(canvas);
         drawLine(canvas);
         drawText(canvas);
+        drawScoreLines(canvas);
+    }
+
+    private void drawScoreLines(Canvas canvas) {
+        Path path = new Path();
+
+        double step = 2 * Math.PI / mRoomNum;
+        double angle = -Math.PI / 2;
+        for (int i = 0; i < mRoomNum; i++) {
+            float scoreR = mRadius * mRoomScoreMap.get(i) / 100;
+            float x = mCenterPoint.x + scoreR * (float) Math.cos(angle);
+            float y = mCenterPoint.y + scoreR * (float) Math.sin(angle);
+            if (i == 0) {
+                path.moveTo(x, y);
+            } else {
+                path.lineTo(x, y);
+            }
+            angle += step;
+        }
+        if (mRoomNum == 1) {
+            path.lineTo(mCenterPoint.x, mCenterPoint.y);
+        }
+        path.close();
+        canvas.drawPath(path, mScoreLinesPaint);
     }
 
     /**
@@ -259,6 +302,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     }
 
     private void drawLine(Canvas canvas) {
+        mRotateAngle = 360 / mRoomNum;
         canvas.save();
 
         canvas.translate(mCenterPoint.x, mCenterPoint.y);
@@ -310,9 +354,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
         mTextPaint.setColor(mPressedTextColor);
-        mCanvas.save();
         mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
-        mCanvas.restore();
     }
 
     private void fingerFarFromOne() {
@@ -324,9 +366,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
         mTextPaint.setColor(mNormalTextColor);
-        mCanvas.save();
         mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
-        mCanvas.restore();
     }
 
     private Path mLinePath = new Path();
@@ -364,6 +404,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
 //        drawLineFollowFinger(event);
         //按压文字变色
         switch (event.getAction()) {
@@ -443,5 +484,14 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
     public interface OnCsmRadarViewClickListener {
         void onCsmRadarViewClick(int pos, int roomId);
+    }
+
+    public void refreshScore() {
+        mRoomNum++;
+        if (mRoomNum == 9) {
+            mRoomNum = 1;
+        }
+        initRoomScoreMap();
+        invalidate();
     }
 }
