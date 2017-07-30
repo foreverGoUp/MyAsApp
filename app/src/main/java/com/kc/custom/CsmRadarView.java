@@ -17,7 +17,9 @@ import android.view.View;
 import com.kc.myasapp.R;
 import com.kc.util.SizeUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -44,6 +46,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
 
     private static final String TAG = "CsmRadarView";
+    private static final int MAX_ROOM_NUM = 8;
     private final int mCircleNum = 4;
     private GestureDetector mGestureDetector = new GestureDetector(getContext(), this);
     private OnCsmRadarViewClickListener mListener;
@@ -57,29 +60,43 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private int mTextColor = Color.WHITE;
     private float mTextSize = SizeUtils.dp2px(getContext(), 15);
 
-    private float mRadius = 0;
-    private float mOriginCircleRadius;//原点圆半径
     private PointF mCenterPoint;
 
     private Paint mCirclePaint, mOriginCirclePaint, mTextPaint, mScoreLinesPaint;
 
+    private float[] mLocations = new float[16];//最大支持显示房间数量
+    //    private String[] mRoomNames = new String[]{"二楼大卧室", "二楼一楼厅", "二楼厨房二", "二二楼卧室", "二楼大卧室", "楼大卧室厨房", "二楼大卧室", "二楼大厨房"};
+    private Map<Integer, Integer> mRoomScoreMap = new HashMap<>(8);//最大支持显示房间数量
 
+
+    //房间相关变量
+    private List<RoomInfo> mRoomInfos = null;
+    //如果房间信息为空，使用例子房间信息列表绘图
+    private List<RoomInfo> mExampleRoomInfos = new ArrayList<>(8);
+    private List<RoomInfo> mDrawRoomInfos = null;
     private int mRoomNum = 7;
     private float mRotateAngle;
-    private float[] mLocations = new float[16];//最大支持显示房间数量
-    private String[] mRoomNames = new String[]{"二楼大卧室", "二楼一楼厅", "二楼厨房二", "二二楼卧室", "二楼大卧室", "楼大卧室厨房", "二楼大卧室", "二楼大厨房"};
-    private Map<Integer, Integer> mRoomScoreMap = new HashMap<>(8);//最大支持显示房间数量
+    private float mRadius = 0;
+    private float mOriginCircleRadius;//原点圆半径
 
 
     public CsmRadarView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initRoomScoreMap();
+        initExampleRoomInfos();
+        initExampleRoomScoreMap();
         init(context, attrs);
     }
 
-    private void initRoomScoreMap() {
+    private void initExampleRoomInfos() {
+        for (int i = 0; i < MAX_ROOM_NUM; i++) {
+            RoomInfo roomInfo = new RoomInfo(i, "示例房间" + (i + 1));
+            mExampleRoomInfos.add(roomInfo);
+        }
+    }
+
+    private void initExampleRoomScoreMap() {
         Random random = new Random();
-        for (int i = 0; i < mRoomNum; i++) {
+        for (int i = 0; i < MAX_ROOM_NUM; i++) {
             mRoomScoreMap.put(i, random.nextInt(101));
         }
     }
@@ -152,11 +169,20 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 //        mCanvas = canvas;
+        confirmRoomInfos();
         calculateRadius();
         drawCircle(canvas);
         drawLine(canvas);
         drawText(canvas);
         drawScoreLines(canvas);
+    }
+
+    private void confirmRoomInfos() {
+        mDrawRoomInfos = mRoomInfos;
+        if (mDrawRoomInfos == null || mDrawRoomInfos.size() == 0) {
+            mDrawRoomInfos = mExampleRoomInfos;
+        }
+        mRoomNum = mDrawRoomInfos.size();
     }
 
     private void drawScoreLines(Canvas canvas) {
@@ -205,7 +231,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
             float x = mCenterPoint.x + mRadius * (float) Math.cos(angle);
             float y = mCenterPoint.y + mRadius * (float) Math.sin(angle);
             Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
-            mTextPaint.getTextBounds(mRoomNames[i], 0, mRoomNames[i].length(), rect);
+            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect);
             if (x == mCenterPoint.x) {
                 if (y > mCenterPoint.y) {
                     y += rect.height();
@@ -237,11 +264,13 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         int minXPos = 0;
         int maxXPos = 0;
         Rect rect2 = new Rect();
-        mTextPaint.getTextBounds(mRoomNames[0], 0, mRoomNames[0].length(), rect2);
+        String room0Name = mDrawRoomInfos.get(0).getRoomName();
+        mTextPaint.getTextBounds(room0Name, 0, room0Name.length(), rect2);
         float minX = mLocations[0] - rect2.width() / 2;
         float maxX = mLocations[0] + rect2.width() / 2;
         for (int i = 1; i < mRoomNum; i++) {
-            mTextPaint.getTextBounds(mRoomNames[i], 0, mRoomNames[i].length(), rect2);
+            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect2);
             //选出最小
             float x = mLocations[i * 2] - rect2.width() / 2;
             if (x < minX) {
@@ -262,7 +291,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
             selPos = maxXPos;
         }
         //开始计算半径
-        mTextPaint.getTextBounds(mRoomNames[selPos], 0, mRoomNames[selPos].length(), rect2);
+        String roomName = mDrawRoomInfos.get(selPos).getRoomName();
+        mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect2);
         mRadius = mWidth / 2 - getPaddingLeft() - rect2.width();
         mOriginCircleRadius = mRadius / 10;
 //        Log.e(TAG, "calculateRadius: after,r=" + mRadius);
@@ -276,7 +306,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
             float x = mCenterPoint.x + mRadius * (float) Math.cos(angle);
             float y = mCenterPoint.y + mRadius * (float) Math.sin(angle);
 //            Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
-            mTextPaint.getTextBounds(mRoomNames[i], 0, mRoomNames[i].length(), rect);
+            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect);
             if (x == mCenterPoint.x) {
                 if (y > mCenterPoint.y) {
                     y += rect.height();
@@ -308,7 +339,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
             } else {
                 mTextPaint.setColor(mTextColor);
             }
-            canvas.drawText(mRoomNames[i], mLocations[i * 2], mLocations[i * 2 + 1], mTextPaint);
+            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            canvas.drawText(roomName, mLocations[i * 2], mLocations[i * 2 + 1], mTextPaint);
 //            canvas.drawCircle(mLocations[i * 2], mLocations[i * 2 + 1], mOriginCircleRadius, mOriginCirclePaint);
         }
     }
@@ -341,7 +373,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         final float x = motionEvent.getX();
         final float y = motionEvent.getY();
         for (int i = 0; i < mRoomNum; i++) {
-            float halfNameWidth = mTextSize * mRoomNames[i].length() / 2;
+            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            float halfNameWidth = mTextSize * roomName.length() / 2;
             if (halfNameWidth < mTextSize) {//说明房间名称只有一个字
                 halfNameWidth = mTextSize;
             }
@@ -370,7 +403,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
         mTextPaint.setColor(mPressTextColor);
-        mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
+        String roomName = mDrawRoomInfos.get(pos).getRoomName();
+        mCanvas.drawText(roomName, x, y, mTextPaint);
     }
 
     /**
@@ -386,7 +420,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
         mTextPaint.setColor(mTextColor);
-        mCanvas.drawText(mRoomNames[pos], x, y, mTextPaint);
+        String roomName = mDrawRoomInfos.get(pos).getRoomName();
+        mCanvas.drawText(roomName, x, y, mTextPaint);
     }
 
     private Path mLinePath = new Path();
@@ -478,8 +513,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         int pos = isClickedOne(e);
-        if (pos != -1 && mListener != null) {
-            mListener.onCsmRadarViewClick(pos, 5);
+        if (pos != -1 && mListener != null && mDrawRoomInfos != mExampleRoomInfos) {
+            mListener.onCsmRadarViewClick(pos, mDrawRoomInfos.get(pos).getRoomId());
         }
         return true;
     }
@@ -512,7 +547,39 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         if (mRoomNum == 9) {
             mRoomNum = 1;
         }
-        initRoomScoreMap();
+        initExampleRoomScoreMap();
         invalidate();
+    }
+
+    /**
+     * 房间信息bean
+     */
+    public class RoomInfo {
+        private int roomId;
+        private String roomName;
+
+        public RoomInfo() {
+        }
+
+        public RoomInfo(int roomId, String roomName) {
+            this.roomId = roomId;
+            this.roomName = roomName;
+        }
+
+        public int getRoomId() {
+            return roomId;
+        }
+
+        public void setRoomId(int roomId) {
+            this.roomId = roomId;
+        }
+
+        public String getRoomName() {
+            return roomName;
+        }
+
+        public void setRoomName(String roomName) {
+            this.roomName = roomName;
+        }
     }
 }
