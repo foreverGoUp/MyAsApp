@@ -82,7 +82,6 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
                 showToast("点击了," + count);
                 break;
             case R.id.csmRadarView:
-                mCsmRadarView.refreshScore();
                 break;
         }
     }

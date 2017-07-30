@@ -21,13 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by ckc on 2017/7/11.
  * 定义：第0个房间总是位于view的垂直中分线上方。
- *
- *
+ * <p>
+ * <p>
  * 功能：
  * 1、可处理xml中定义的宽高、padding、paddingLeft
  * 2、可根据文本长度动态变化雷达半径
@@ -35,12 +34,12 @@ import java.util.Random;
  * 4、点击某个房间名称可回调该房间在列表的位置和id。
  * 5、按压文本变色
  * 6、动态改变分数数值显示。
- *
- *
+ * 7、房间信息以RoomInfo实体类表示。
+ * <p>
+ * <p>
  * 待增加功能
  * 1、增加xml定义属性和公共接口
  * 2、趣味性：雷达跟随手指旋转，放开回旋至默认位置。
- *
  */
 public class CsmRadarView extends View implements GestureDetector.OnGestureListener {
 
@@ -59,6 +58,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private int mPressTextColor = Color.RED;
     private int mTextColor = Color.WHITE;
     private float mTextSize = SizeUtils.dp2px(getContext(), 15);
+    private int mDefaultScore = 80;
 
     private PointF mCenterPoint;
 
@@ -95,9 +95,10 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     }
 
     private void initExampleRoomScoreMap() {
-        Random random = new Random();
+//        Random random = new Random();
         for (int i = 0; i < MAX_ROOM_NUM; i++) {
-            mRoomScoreMap.put(i, random.nextInt(101));
+//            mRoomScoreMap.put(i, random.nextInt(101));
+            mRoomScoreMap.put(i, mDefaultScore);
         }
     }
 
@@ -109,7 +110,11 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         mRadarLineColor = typedArray.getInt(R.styleable.CsmRadarView_radarLineColor, mRadarLineColor);
         mScoreLineColor = typedArray.getInt(R.styleable.CsmRadarView_scoreLineColor, mScoreLineColor);
         mTextSize = typedArray.getDimension(R.styleable.CsmRadarView_textSize, mTextSize);
-
+        //获得默认分数
+        int defaultScore = typedArray.getInt(R.styleable.CsmRadarView_defaultScore, mDefaultScore);
+        if (defaultScore > -1 && defaultScore < 101) {
+            mDefaultScore = defaultScore;
+        }
 //        int testInt = typedArray.getInt(R.styleable.CsmRadarView_testInt, 404);
 //        String testString = typedArray.getString(R.styleable.CsmRadarView_testString);
 //        boolean testBoolean = typedArray.getBoolean(R.styleable.CsmRadarView_tesBoolean, false);
@@ -191,7 +196,11 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         double step = 2 * Math.PI / mRoomNum;
         double angle = -Math.PI / 2;
         for (int i = 0; i < mRoomNum; i++) {
-            float scoreR = mRadius * mRoomScoreMap.get(i) / 100;
+            Integer score = mRoomScoreMap.get(mDrawRoomInfos.get(i).getRoomId());
+            if (score == null) {
+                score = mDefaultScore;
+            }
+            float scoreR = mRadius * score / 100;
             float x = mCenterPoint.x + scoreR * (float) Math.cos(angle);
             float y = mCenterPoint.y + scoreR * (float) Math.sin(angle);
             if (i == 0) {
@@ -542,14 +551,74 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         void onCsmRadarViewClick(int pos, int roomId);
     }
 
-    public void refreshScore() {
-        mRoomNum++;
-        if (mRoomNum == 9) {
-            mRoomNum = 1;
+    public void updateRoomName(Integer roomId, String name) {
+        if (roomId == null) {
+            Log.e(TAG, "更新房间名称失败：参数roomId为空");
         }
-        initExampleRoomScoreMap();
+        if (name == null) {
+            Log.e(TAG, "更新房间名称失败：参数name为空");
+        }
+        if (mRoomInfos == null) {
+            Log.e(TAG, "更新房间名称失败：mRoomInfos为空");
+            return;
+        }
+        boolean find = false;
+        for (RoomInfo roomInfo : mRoomInfos) {
+            if (roomInfo.getRoomId() == roomId) {
+                find = true;
+                roomInfo.setRoomName(name);
+                break;
+            }
+        }
+        if (find) {
+            invalidate();
+        }
+    }
+
+    public void updateRoomScore(Integer roomId, Integer score) {
+        if (roomId == null) {
+            Log.e(TAG, "更新房间分数失败：参数roomId为空");
+        }
+        if (score == null) {
+            Log.e(TAG, "更新房间分数失败：参数score为空");
+        }
+        if (mRoomInfos == null) {
+            Log.e(TAG, "更新房间分数失败：mRoomInfos为空");
+            return;
+        }
+        boolean find = false;
+        for (RoomInfo roomInfo : mRoomInfos) {
+            if (roomInfo.getRoomId() == roomId) {
+                find = true;
+                break;
+            }
+        }
+        if (find) {
+            mRoomScoreMap.put(roomId, score);
+            invalidate();
+        }
+    }
+
+    public void setRoomInfos(List<RoomInfo> list) {
+        if (list == null) {
+            Log.e(TAG, "设置房间信息失败：参数list为空");
+            return;
+        }
+        mRoomInfos = list;
         invalidate();
     }
+
+    /**
+     * 测试查看不同房间的view效果
+     * */
+//    public void refreshScore() {
+//        mRoomNum++;
+//        if (mRoomNum == 9) {
+//            mRoomNum = 1;
+//        }
+//        initExampleRoomScoreMap();
+//        invalidate();
+//    }
 
     /**
      * 房间信息bean

@@ -10,6 +10,7 @@
         <attr name="textSize" format="dimension" />
         <attr name="scoreLineColor" format="color" />
         <attr name="radarLineColor" format="color" />
+        <attr name="defaultScore" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="CircleImageView">

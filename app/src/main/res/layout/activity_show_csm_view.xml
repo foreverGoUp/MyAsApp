@@ -28,7 +28,8 @@
             kc:pressTextColor="#ffffff"
             kc:radarLineColor="#00ff00"
             kc:scoreLineColor="#ff0000"
-            kc:textSize="10dp" />
+            kc:textSize="10dp"
+            kc:defaultScore="100" />
 
         <com.kc.custom.test.CsmButton
             android:id="@+id/csmButton"
