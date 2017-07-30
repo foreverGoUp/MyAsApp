@@ -35,10 +35,12 @@ import java.util.Map;
  * 5、按压文本变色
  * 6、动态改变分数数值显示。
  * 7、房间信息以RoomInfo实体类表示。
+ * 8、增加xml定义属性和公共接口（修改房间名称，修改房间分数，设置房间信息列表）
+ * 9、增加房间名称超出宽度部分省略
  * <p>
  * <p>
  * 待增加功能
- * 1、增加xml定义属性和公共接口
+ * 1、
  * 2、趣味性：雷达跟随手指旋转，放开回旋至默认位置。
  */
 public class CsmRadarView extends View implements GestureDetector.OnGestureListener {
@@ -47,6 +49,8 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private static final String TAG = "CsmRadarView";
     private static final int MAX_ROOM_NUM = 8;
     private final int mCircleNum = 4;
+    //文字最多显示N个文本大小的宽度
+    private final int MAX_SHOW_TEXT_WIDTH_NUM = 5;
     private GestureDetector mGestureDetector = new GestureDetector(getContext(), this);
     private OnCsmRadarViewClickListener mListener;
     private Canvas mCanvas;
@@ -239,7 +243,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         for (int i = 0; i < mRoomNum; i++) {
             float x = mCenterPoint.x + mRadius * (float) Math.cos(angle);
             float y = mCenterPoint.y + mRadius * (float) Math.sin(angle);
-            Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
+//            Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
             String roomName = mDrawRoomInfos.get(i).getRoomName();
             mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect);
             if (x == mCenterPoint.x) {
@@ -543,6 +547,35 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         return false;
     }
 
+    /**
+     * 将超过宽度限制的文本末尾用...表示
+     * <p>
+     * 若要修改宽度显示数量，请修改MAX_SHOW_TEXT_WIDTH_NUM变量
+     */
+    private String getEllipsizeEndName(String name) {
+        final float textMaxWidth = mTextSize * MAX_SHOW_TEXT_WIDTH_NUM;
+
+        String ret = null;
+        Rect rect = new Rect();
+        mTextPaint.getTextBounds(name, 0, name.length(), rect);
+        if (rect.width() > textMaxWidth) {
+            int lastLessWidthEnd = 0;
+            for (int i = 0; i < name.length(); i++) {
+                mTextPaint.getTextBounds(name, 0, i + 1, rect);
+//                Log.e(TAG, "name="+name+",rect.width()="+rect.width()+",textMaxWidth="+textMaxWidth);
+                if (rect.width() <= textMaxWidth) {
+                    lastLessWidthEnd = i + 1;
+                } else {
+                    break;
+                }
+            }
+            ret = name.substring(0, lastLessWidthEnd) + "...";
+        } else {
+            ret = name;
+        }
+        return ret;
+    }
+
     public void setListener(OnCsmRadarViewClickListener listener) {
         mListener = listener;
     }
@@ -566,7 +599,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         for (RoomInfo roomInfo : mRoomInfos) {
             if (roomInfo.getRoomId() == roomId) {
                 find = true;
-                roomInfo.setRoomName(name);
+                roomInfo.setRoomName(getEllipsizeEndName(name));
                 break;
             }
         }
@@ -581,6 +614,10 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         }
         if (score == null) {
             Log.e(TAG, "更新房间分数失败：参数score为空");
+        }
+        if (score < 0 || score > 100) {
+            Log.e(TAG, "更新房间分数失败：参数score不在0-100范围内");
+            return;
         }
         if (mRoomInfos == null) {
             Log.e(TAG, "更新房间分数失败：mRoomInfos为空");
@@ -604,6 +641,13 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
             Log.e(TAG, "设置房间信息失败：参数list为空");
             return;
         }
+        for (RoomInfo roomInfo : list) {
+            if (roomInfo.getRoomName() != null) {
+                roomInfo.setRoomName(getEllipsizeEndName(roomInfo.getRoomName()));
+            } else {
+                roomInfo.setRoomName("未命名房间");
+            }
+        }
         mRoomInfos = list;
         invalidate();
     }
@@ -623,7 +667,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     /**
      * 房间信息bean
      */
-    public class RoomInfo {
+    public static class RoomInfo {
         private int roomId;
         private String roomName;
 

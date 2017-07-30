@@ -4,6 +4,11 @@ public class RoomInfo {
     private int roomId;
     private String roomName;
 
+    public RoomInfo(int roomId, String roomName) {
+        this.roomId = roomId;
+        this.roomName = roomName;
+    }
+
     public int getRoomId() {
         return roomId;
     }
