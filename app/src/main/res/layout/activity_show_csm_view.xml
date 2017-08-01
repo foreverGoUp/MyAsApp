@@ -19,7 +19,6 @@
             android:layout_height="250dp" />
 
         <com.kc.custom.CsmRadarView
-            android:visibility="gone"
             android:id="@+id/csmRadarView"
             android:layout_width="match_parent"
             android:layout_height="200dp"

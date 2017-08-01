@@ -68,15 +68,15 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 
     private Paint mCirclePaint, mOriginCirclePaint, mTextPaint, mScoreLinesPaint;
 
-    private float[] mLocations = new float[16];//最大支持显示房间数量
+    private float[] mLocations = new float[MAX_ROOM_NUM * 2];//最大支持显示房间数量
     //    private String[] mRoomNames = new String[]{"二楼大卧室", "二楼一楼厅", "二楼厨房二", "二二楼卧室", "二楼大卧室", "楼大卧室厨房", "二楼大卧室", "二楼大厨房"};
-    private Map<Integer, Integer> mRoomScoreMap = new HashMap<>(8);//最大支持显示房间数量
+    private Map<Integer, Integer> mRoomScoreMap = new HashMap<>(MAX_ROOM_NUM);//最大支持显示房间数量
 
 
     //房间相关变量
     private List<RoomInfo> mRoomInfos = null;
     //如果房间信息为空，使用例子房间信息列表绘图
-    private List<RoomInfo> mExampleRoomInfos = new ArrayList<>(8);
+    private List<RoomInfo> mExampleRoomInfos = new ArrayList<>(MAX_ROOM_NUM);
     private List<RoomInfo> mDrawRoomInfos = null;
     private int mRoomNum = 7;
     private float mRotateAngle;
