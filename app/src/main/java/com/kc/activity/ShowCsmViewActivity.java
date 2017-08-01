@@ -16,6 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_CLEAN;
+import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_LIGHT;
+import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_OXYGEN;
+import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_TEMP;
+import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_WET;
+
 public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnCsmDialViewColorChanged
         , View.OnClickListener, CsmRadarView.OnCsmRadarViewClickListener {
 
@@ -25,7 +31,7 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     private CsmRadarView mCsmRadarView;
     private CsmSpiderWebView mCsmSpiderWebView;
     private List<CsmRadarView.RoomInfo> mRoomInfos = new ArrayList<>(8);
-    private List<CsmSpiderWebView.RoomInfo> mRoomInfos2 = new ArrayList<>(5);
+    private List<CsmSpiderWebView.IndexInfo> mIndexInfos2 = new ArrayList<>(5);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,14 +77,28 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
         }
         mCsmRadarView.setRoomInfos(mRoomInfos);
         //蜘蛛网图
+        CsmSpiderWebView.IndexInfo indexInfo = null;
         for (int i = 0; i < 5; i++) {
-            if (i == 3) {
-                mRoomInfos2.add(new CsmSpiderWebView.RoomInfo(i + 4, "Really Room Kid" + i));
-            } else {
-                mRoomInfos2.add(new CsmSpiderWebView.RoomInfo(i + 4, "真实房间房间" + i));
+            switch (i) {
+                case 0:
+                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_OXYGEN, "氧度");
+                    break;
+                case 1:
+                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_CLEAN, "净度");
+                    break;
+                case 2:
+                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_LIGHT, "光度");
+                    break;
+                case 3:
+                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_WET, "湿度");
+                    break;
+                case 4:
+                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_TEMP, "温度");
+                    break;
             }
+            mIndexInfos2.add(indexInfo);
         }
-        mCsmSpiderWebView.setRoomInfos(mRoomInfos2);
+        mCsmSpiderWebView.setIndexInfos(mIndexInfos2);
     }
 
     @Override
@@ -119,16 +139,34 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
             }
             case R.id.csmSpiderWebView: {
                 Random random = new Random();
-                int nextInt = random.nextInt(8);
-                int roomId = nextInt + 4;
+                int i = random.nextInt(5);
                 int score = random.nextInt(101);
-                for (CsmRadarView.RoomInfo roomInfo : mRoomInfos) {
-                    if (roomInfo.getRoomId() == roomId) {
-                        mCsmSpiderWebView.updateRoomName(roomInfo.getRoomId(), "房间" + score);
-                        mCsmSpiderWebView.updateRoomScore(roomInfo.getRoomId(), score);
+                String indexType = null;
+                String name = null;
+                switch (i) {
+                    case 0:
+                        indexType = INDEX_TYPE_OXYGEN;
+                        name = "氧度:";
                         break;
-                    }
+                    case 1:
+                        indexType = INDEX_TYPE_CLEAN;
+                        name = "净度:";
+                        break;
+                    case 2:
+                        indexType = INDEX_TYPE_LIGHT;
+                        name = "光度:";
+                        break;
+                    case 3:
+                        indexType = INDEX_TYPE_WET;
+                        name = "湿度:";
+                        break;
+                    case 4:
+                        indexType = INDEX_TYPE_TEMP;
+                        name = "温度:";
+                        break;
                 }
+                mCsmSpiderWebView.updateIndexName(indexType, name + score);
+                mCsmSpiderWebView.updateIndexScore(indexType, score);
                 break;
             }
         }

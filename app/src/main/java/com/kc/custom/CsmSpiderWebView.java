@@ -24,19 +24,19 @@ import java.util.Map;
 
 /**
  * Created by ckc on 2017/7/11.
- * 定义：第0个房间总是位于view的垂直中分线上方。
+ * 定义：第0个指数总是位于view的垂直中分线上方。
  * <p>
  * <p>
  * 功能：
  * 1、可处理xml中定义的宽高、padding、paddingLeft
  * 2、可根据文本长度动态变化雷达半径
  * 3、中文文本长度（length）至少支持5.
- * 4、点击某个房间名称可回调该房间在列表的位置和id。
+ * 4、点击某个指数名称可回调该指数在列表的位置和id。
  * 5、按压文本变色
  * 6、动态改变分数数值显示。
- * 7、房间信息以RoomInfo实体类表示。
- * 8、增加xml定义属性和公共接口（修改房间名称，修改房间分数，设置房间信息列表）
- * 9、增加房间名称超出宽度部分省略
+ * 7、指数信息以RoomInfo实体类表示。
+ * 8、增加xml定义属性和公共接口（修改指数名称，修改指数分数，设置指数信息列表）
+ * 9、增加指数名称超出宽度部分省略
  * <p>
  * <p>
  * 待增加功能
@@ -47,12 +47,12 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
 
 
     private static final String TAG = "CsmRadarView";
-    private static final int MAX_ROOM_NUM = 8;
+    private static final int MAX_INDEX_NUM = 5;
     private final int mCircleNum = 4;
     //文字最多显示N个文本大小的宽度
     private final int MAX_SHOW_TEXT_WIDTH_NUM = 5;
     private GestureDetector mGestureDetector = new GestureDetector(getContext(), this);
-    private OnCsmRadarViewClickListener mListener;
+    private OnCsmSpiderWebViewClickListener mListener;
     private Canvas mCanvas;
     private float mWidth;
 
@@ -68,16 +68,16 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
 
     private Paint mCirclePaint, mOriginCirclePaint, mTextPaint, mScoreLinesPaint;
 
-    private float[] mLocations = new float[16];//最大支持显示房间数量
+    private float[] mLocations = new float[MAX_INDEX_NUM * 2];//最大支持显示指数数量
     //    private String[] mRoomNames = new String[]{"二楼大卧室", "二楼一楼厅", "二楼厨房二", "二二楼卧室", "二楼大卧室", "楼大卧室厨房", "二楼大卧室", "二楼大厨房"};
-    private Map<Integer, Integer> mRoomScoreMap = new HashMap<>(8);//最大支持显示房间数量
+    private Map<String, Integer> mIndexScoreMap = new HashMap<>(MAX_INDEX_NUM);//最大支持显示指数数量
 
 
-    //房间相关变量
-    private List<RoomInfo> mRoomInfos = null;
-    //如果房间信息为空，使用例子房间信息列表绘图
-    private List<RoomInfo> mExampleRoomInfos = new ArrayList<>(8);
-    private List<RoomInfo> mDrawRoomInfos = null;
+    //指数相关变量
+    private List<IndexInfo> mIndexInfos = null;
+    //如果指数信息为空，使用例子指数信息列表绘图
+    private List<IndexInfo> mExampleIndexInfos = new ArrayList<>(MAX_INDEX_NUM);
+    private List<IndexInfo> mDrawIndexInfos = null;
     private int mRoomNum = 7;
     private float mRotateAngle;
     private float mRadius = 0;
@@ -86,23 +86,58 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
 
     public CsmSpiderWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initExampleRoomInfos();
-        initExampleRoomScoreMap();
+        initExampleIndexInfos();
+        initExampleIndexScoreMap();
         init(context, attrs);
     }
 
-    private void initExampleRoomInfos() {
-        for (int i = 0; i < MAX_ROOM_NUM; i++) {
-            RoomInfo roomInfo = new RoomInfo(i, "示例房间" + (i + 1));
-            mExampleRoomInfos.add(roomInfo);
+    private void initExampleIndexInfos() {
+        IndexInfo indexInfo = null;
+        for (int i = 0; i < MAX_INDEX_NUM; i++) {
+//            mIndexScoreMap.put(i, random.nextInt(101));
+            switch (i) {
+                case 0:
+                    indexInfo = new IndexInfo(INDEX_TYPE_OXYGEN, "示例氧度");
+                    break;
+                case 1:
+                    indexInfo = new IndexInfo(INDEX_TYPE_CLEAN, "示例净度");
+                    break;
+                case 2:
+                    indexInfo = new IndexInfo(INDEX_TYPE_LIGHT, "示例光度");
+                    break;
+                case 3:
+                    indexInfo = new IndexInfo(INDEX_TYPE_WET, "示例湿度");
+                    break;
+                case 4:
+                    indexInfo = new IndexInfo(INDEX_TYPE_TEMP, "示例温度");
+                    break;
+            }
+            mExampleIndexInfos.add(indexInfo);
         }
     }
 
-    private void initExampleRoomScoreMap() {
+    private void initExampleIndexScoreMap() {
 //        Random random = new Random();
-        for (int i = 0; i < MAX_ROOM_NUM; i++) {
-//            mRoomScoreMap.put(i, random.nextInt(101));
-            mRoomScoreMap.put(i, mDefaultScore);
+        for (int i = 0; i < MAX_INDEX_NUM; i++) {
+//            mIndexScoreMap.put(i, random.nextInt(101));
+            switch (i) {
+                case 0:
+                    mIndexScoreMap.put(INDEX_TYPE_OXYGEN, mDefaultScore);
+                    break;
+                case 1:
+                    mIndexScoreMap.put(INDEX_TYPE_CLEAN, mDefaultScore);
+                    break;
+                case 2:
+                    mIndexScoreMap.put(INDEX_TYPE_LIGHT, mDefaultScore);
+                    break;
+                case 3:
+                    mIndexScoreMap.put(INDEX_TYPE_WET, mDefaultScore);
+                    break;
+                case 4:
+                    mIndexScoreMap.put(INDEX_TYPE_TEMP, mDefaultScore);
+                    break;
+            }
+
         }
     }
 
@@ -187,11 +222,11 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
     }
 
     private void confirmRoomInfos() {
-        mDrawRoomInfos = mRoomInfos;
-        if (mDrawRoomInfos == null || mDrawRoomInfos.size() == 0) {
-            mDrawRoomInfos = mExampleRoomInfos;
+        mDrawIndexInfos = mIndexInfos;
+        if (mDrawIndexInfos == null || mDrawIndexInfos.size() == 0) {
+            mDrawIndexInfos = mExampleIndexInfos;
         }
-        mRoomNum = mDrawRoomInfos.size();
+        mRoomNum = mDrawIndexInfos.size();
     }
 
     private void drawScoreLines(Canvas canvas) {
@@ -200,7 +235,7 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         double step = 2 * Math.PI / mRoomNum;
         double angle = -Math.PI / 2;
         for (int i = 0; i < mRoomNum; i++) {
-            Integer score = mRoomScoreMap.get(mDrawRoomInfos.get(i).getRoomId());
+            Integer score = mIndexScoreMap.get(mDrawIndexInfos.get(i).getType());
             if (score == null) {
                 score = mDefaultScore;
             }
@@ -249,7 +284,7 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
             float x = mCenterPoint.x + mRadius * (float) Math.cos(angle);
             float y = mCenterPoint.y + mRadius * (float) Math.sin(angle);
 //            Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
-            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            String roomName = mDrawIndexInfos.get(i).getName();
             mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect);
             if (x == mCenterPoint.x) {
                 if (y > mCenterPoint.y) {
@@ -282,12 +317,12 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         int minXPos = 0;
         int maxXPos = 0;
         Rect rect2 = new Rect();
-        String room0Name = mDrawRoomInfos.get(0).getRoomName();
+        String room0Name = mDrawIndexInfos.get(0).getName();
         mTextPaint.getTextBounds(room0Name, 0, room0Name.length(), rect2);
         float minX = mLocations[0] - rect2.width() / 2;
         float maxX = mLocations[0] + rect2.width() / 2;
         for (int i = 1; i < mRoomNum; i++) {
-            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            String roomName = mDrawIndexInfos.get(i).getName();
             mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect2);
             //选出最小
             float x = mLocations[i * 2] - rect2.width() / 2;
@@ -309,7 +344,7 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
             selPos = maxXPos;
         }
         //开始计算半径
-        String roomName = mDrawRoomInfos.get(selPos).getRoomName();
+        String roomName = mDrawIndexInfos.get(selPos).getName();
         mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect2);
         mRadius = mWidth / 2 - getPaddingLeft() - rect2.width();
         mOriginCircleRadius = mRadius / 10;
@@ -324,7 +359,7 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
             float x = mCenterPoint.x + mRadius * (float) Math.cos(angle);
             float y = mCenterPoint.y + mRadius * (float) Math.sin(angle);
 //            Log.e(TAG, "text location i:" + i + ",x=" + x + ",y=" + y);
-            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            String roomName = mDrawIndexInfos.get(i).getName();
             mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect);
             if (x == mCenterPoint.x) {
                 if (y > mCenterPoint.y) {
@@ -357,7 +392,7 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
             } else {
                 mTextPaint.setColor(mTextColor);
             }
-            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            String roomName = mDrawIndexInfos.get(i).getName();
             canvas.drawText(roomName, mLocations[i * 2], mLocations[i * 2 + 1], mTextPaint);
 //            canvas.drawSpiderWeb(mLocations[i * 2], mLocations[i * 2 + 1], mOriginCircleRadius, mOriginCirclePaint);
         }
@@ -414,9 +449,9 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         final float x = motionEvent.getX();
         final float y = motionEvent.getY();
         for (int i = 0; i < mRoomNum; i++) {
-            String roomName = mDrawRoomInfos.get(i).getRoomName();
+            String roomName = mDrawIndexInfos.get(i).getName();
             float halfNameWidth = mTextSize * roomName.length() / 2;
-            if (halfNameWidth < mTextSize) {//说明房间名称只有一个字
+            if (halfNameWidth < mTextSize) {//说明指数名称只有一个字
                 halfNameWidth = mTextSize;
             }
             float x1 = mLocations[i * 2] - halfNameWidth;
@@ -444,7 +479,7 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
         mTextPaint.setColor(mPressTextColor);
-        String roomName = mDrawRoomInfos.get(pos).getRoomName();
+        String roomName = mDrawIndexInfos.get(pos).getName();
         mCanvas.drawText(roomName, x, y, mTextPaint);
     }
 
@@ -461,7 +496,7 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         float x = mLocations[pos * 2];
         float y = mLocations[pos * 2 + 1];
         mTextPaint.setColor(mTextColor);
-        String roomName = mDrawRoomInfos.get(pos).getRoomName();
+        String roomName = mDrawIndexInfos.get(pos).getName();
         mCanvas.drawText(roomName, x, y, mTextPaint);
     }
 
@@ -554,8 +589,8 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         int pos = isClickedOne(e);
-        if (pos != -1 && mListener != null && mDrawRoomInfos != mExampleRoomInfos) {
-            mListener.onCsmRadarViewClick(pos, mDrawRoomInfos.get(pos).getRoomId());
+        if (pos != -1 && mListener != null && mDrawIndexInfos != mExampleIndexInfos) {
+            mListener.onCsmSpiderWebViewClick(pos, mDrawIndexInfos.get(pos).getType());
         }
         return true;
     }
@@ -604,30 +639,30 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         return ret;
     }
 
-    public void setListener(OnCsmRadarViewClickListener listener) {
+    public void setListener(OnCsmSpiderWebViewClickListener listener) {
         mListener = listener;
     }
 
-    public interface OnCsmRadarViewClickListener {
-        void onCsmRadarViewClick(int pos, int roomId);
+    public interface OnCsmSpiderWebViewClickListener {
+        void onCsmSpiderWebViewClick(int pos, String indexType);
     }
 
-    public void updateRoomName(Integer roomId, String name) {
-        if (roomId == null) {
-            Log.e(TAG, "更新房间名称失败：参数roomId为空");
+    public void updateIndexName(String indexType, String name) {
+        if (indexType == null) {
+            Log.e(TAG, "更新指数名称失败：参数indexType为空");
         }
         if (name == null) {
-            Log.e(TAG, "更新房间名称失败：参数name为空");
+            Log.e(TAG, "更新指数名称失败：参数name为空");
         }
-        if (mRoomInfos == null) {
-            Log.e(TAG, "更新房间名称失败：mRoomInfos为空");
+        if (mIndexInfos == null) {
+            Log.e(TAG, "更新指数名称失败：mIndexInfos为空");
             return;
         }
         boolean find = false;
-        for (RoomInfo roomInfo : mRoomInfos) {
-            if (roomInfo.getRoomId() == roomId) {
+        for (IndexInfo indexInfo : mIndexInfos) {
+            if (indexInfo.getType().equals(indexType)) {
                 find = true;
-                roomInfo.setRoomName(getEllipsizeEndName(name));
+                indexInfo.setName(getEllipsizeEndName(name));
                 break;
             }
         }
@@ -636,91 +671,106 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         }
     }
 
-    public void updateRoomScore(Integer roomId, Integer score) {
-        if (roomId == null) {
-            Log.e(TAG, "更新房间分数失败：参数roomId为空");
+    public void updateIndexScore(String indexType, Integer score) {
+        if (indexType == null) {
+            Log.e(TAG, "更新指数分数失败：参数indexType为空");
         }
         if (score == null) {
-            Log.e(TAG, "更新房间分数失败：参数score为空");
+            Log.e(TAG, "更新指数分数失败：参数score为空");
         }
         if (score < 0 || score > 100) {
-            Log.e(TAG, "更新房间分数失败：参数score不在0-100范围内");
+            Log.e(TAG, "更新指数分数失败：参数score不在0-100范围内");
             return;
         }
-        if (mRoomInfos == null) {
-            Log.e(TAG, "更新房间分数失败：mRoomInfos为空");
+        if (mIndexInfos == null) {
+            Log.e(TAG, "更新指数分数失败：mIndexInfos为空");
             return;
         }
         boolean find = false;
-        for (RoomInfo roomInfo : mRoomInfos) {
-            if (roomInfo.getRoomId() == roomId) {
+        for (IndexInfo indexInfo : mIndexInfos) {
+            if (indexInfo.getType().equals(indexType)) {
                 find = true;
                 break;
             }
         }
         if (find) {
-            mRoomScoreMap.put(roomId, score);
+            mIndexScoreMap.put(indexType, score);
             invalidate();
         }
     }
 
-    public void setRoomInfos(List<RoomInfo> list) {
+    public void setIndexInfos(List<IndexInfo> list) {
         if (list == null) {
-            Log.e(TAG, "设置房间信息失败：参数list为空");
+            Log.e(TAG, "设置指数信息失败：参数list为空");
             return;
         }
-        for (RoomInfo roomInfo : list) {
-            if (roomInfo.getRoomName() != null) {
-                roomInfo.setRoomName(getEllipsizeEndName(roomInfo.getRoomName()));
+        for (IndexInfo indexInfo : list) {
+            if (indexInfo.getName() != null) {
+                indexInfo.setName(getEllipsizeEndName(indexInfo.getName()));
             } else {
-                roomInfo.setRoomName("未命名房间");
+                indexInfo.setName("未命名指数");
             }
         }
-        mRoomInfos = list;
+        mIndexInfos = list;
         invalidate();
     }
 
     /**
-     * 测试查看不同房间的view效果
+     * 测试查看不同指数的view效果
      * */
 //    public void refreshScore() {
 //        mRoomNum++;
 //        if (mRoomNum == 9) {
 //            mRoomNum = 1;
 //        }
-//        initExampleRoomScoreMap();
+//        initExampleIndexScoreMap();
 //        invalidate();
 //    }
 
+    public static final String INDEX_TYPE_OXYGEN = "oxygen";
+    public static final String INDEX_TYPE_CLEAN = "clean";
+    public static final String INDEX_TYPE_LIGHT = "light";
+    public static final String INDEX_TYPE_WET = "wet";
+    public static final String INDEX_TYPE_TEMP = "temperature";
+
     /**
-     * 房间信息bean
+     * 指数信息bean
      */
-    public static class RoomInfo {
+    public static class IndexInfo {
         private int roomId;
-        private String roomName;
+        private String type;
+        private String name;
 
-        public RoomInfo() {
+        public IndexInfo() {
         }
 
-        public RoomInfo(int roomId, String roomName) {
-            this.roomId = roomId;
-            this.roomName = roomName;
+        public IndexInfo(String type, String name) {
+            this.type = type;
+            this.name = name;
         }
 
-        public int getRoomId() {
-            return roomId;
+//        public int getRoomId() {
+//            return roomId;
+//        }
+//
+//        public void setRoomId(int roomId) {
+//            this.roomId = roomId;
+//        }
+
+        public String getType() {
+            return type;
         }
 
-        public void setRoomId(int roomId) {
-            this.roomId = roomId;
+        public void setType(String type) {
+            this.type = type;
         }
 
-        public String getRoomName() {
-            return roomName;
+        public String getName() {
+            return name;
         }
 
-        public void setRoomName(String roomName) {
-            this.roomName = roomName;
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }
