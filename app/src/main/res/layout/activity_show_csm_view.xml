@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:kc="http://schemas.android.com/apk/res-auto"
+        xmlns:radar="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/llayout_show_csm_view_container"
         android:layout_width="match_parent"
@@ -19,17 +19,29 @@
             android:layout_height="250dp" />
 
         <com.kc.custom.CsmRadarView
+            android:visibility="gone"
             android:id="@+id/csmRadarView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="@dimen/common_blank_nor"
             android:background="#80ff0000"
-            kc:textColor="#000"
-            kc:pressTextColor="#ffffff"
-            kc:radarLineColor="#fff"
-            kc:scoreLineColor="#ff0000"
-            kc:textSize="10dp"
-            kc:defaultScore="100" />
+            radar:textColor="#000"
+            radar:pressTextColor="#ffffff"
+            radar:radarLineColor="#fff"
+            radar:textSize="10dp"
+            radar:defaultScore="100" />
+
+        <com.kc.custom.CsmSpiderWebView
+            android:id="@+id/csmSpiderWebView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/common_blank_nor"
+            android:background="#80ff0000"
+            radar:textColor1="#000"
+            radar:pressTextColor1="#ffffff"
+            radar:radarLineColor1="#fff"
+            radar:textSize1="10dp"
+            radar:defaultScore1="100" />
 
         <com.kc.custom.test.CsmButton
             android:id="@+id/csmButton"

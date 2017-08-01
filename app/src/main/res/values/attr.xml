@@ -13,6 +13,19 @@
         <attr name="defaultScore" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="CsmSpiderWebView">
+        <!--<attr name="tesBoolean" format="boolean" />-->
+        <!--<attr name="testDimen" format="dimension" />-->
+        <!--<attr name="testString" format="string" />-->
+        <!--<attr name="testInt" format="integer" />-->
+        <attr name="textColor1" format="color" />
+        <attr name="pressTextColor1" format="color" />
+        <attr name="textSize1" format="dimension" />
+        <attr name="scoreLineColor1" format="color" />
+        <attr name="radarLineColor1" format="color" />
+        <attr name="defaultScore1" format="integer" />
+    </declare-styleable>
+
     <declare-styleable name="CircleImageView">
         <attr name="civ_border_width" format="dimension" />
         <attr name="civ_border_color" format="color" />

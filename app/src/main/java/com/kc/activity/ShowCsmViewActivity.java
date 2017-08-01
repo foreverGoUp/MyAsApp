@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import com.kc.base.BaseActivity;
 import com.kc.custom.CsmDialView;
 import com.kc.custom.CsmRadarView;
+import com.kc.custom.CsmSpiderWebView;
 import com.kc.myasapp.R;
 
 import java.util.ArrayList;
@@ -22,7 +23,9 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
 
     private LinearLayout mContainer;
     private CsmRadarView mCsmRadarView;
+    private CsmSpiderWebView mCsmSpiderWebView;
     private List<CsmRadarView.RoomInfo> mRoomInfos = new ArrayList<>(8);
+    private List<CsmSpiderWebView.RoomInfo> mRoomInfos2 = new ArrayList<>(5);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,9 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
         mCsmRadarView = (CsmRadarView) findViewById(R.id.csmRadarView);
         mCsmRadarView.setListener(this);
         mCsmRadarView.setOnClickListener(this);
+        //蜘蛛网图
+        mCsmSpiderWebView = (CsmSpiderWebView) findViewById(R.id.csmSpiderWebView);
+        mCsmSpiderWebView.setOnClickListener(this);
 
         //以下格式中的2表示字符串至少占2位，若只要一位则空格补前
 //        String format = "%2d";
@@ -56,7 +62,7 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     @Override
     protected void init() {
         //雷达图
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 5; i++) {
             if (i == 3) {
                 mRoomInfos.add(new CsmRadarView.RoomInfo(i + 4, "Really Room Kid" + i));
             } else {
@@ -64,6 +70,15 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
             }
         }
         mCsmRadarView.setRoomInfos(mRoomInfos);
+        //蜘蛛网图
+        for (int i = 0; i < 5; i++) {
+            if (i == 3) {
+                mRoomInfos2.add(new CsmSpiderWebView.RoomInfo(i + 4, "Really Room Kid" + i));
+            } else {
+                mRoomInfos2.add(new CsmSpiderWebView.RoomInfo(i + 4, "真实房间房间" + i));
+            }
+        }
+        mCsmSpiderWebView.setRoomInfos(mRoomInfos2);
     }
 
     @Override
@@ -88,17 +103,34 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
                 count++;
                 showToast("点击了," + count);
                 break;
-            case R.id.csmRadarView:
+            case R.id.csmRadarView: {
                 Random random = new Random();
                 int nextInt = random.nextInt(8);
                 int roomId = nextInt + 4;
+                int score = random.nextInt(101);
                 for (CsmRadarView.RoomInfo roomInfo : mRoomInfos) {
                     if (roomInfo.getRoomId() == roomId) {
-                        mCsmRadarView.updateRoomName(roomInfo.getRoomId(), "真实真实真实" + roomId);
-                        mCsmRadarView.updateRoomScore(roomInfo.getRoomId(), roomId * 10);
+                        mCsmRadarView.updateRoomName(roomInfo.getRoomId(), "房间" + score);
+                        mCsmRadarView.updateRoomScore(roomInfo.getRoomId(), score);
+                        break;
                     }
                 }
                 break;
+            }
+            case R.id.csmSpiderWebView: {
+                Random random = new Random();
+                int nextInt = random.nextInt(8);
+                int roomId = nextInt + 4;
+                int score = random.nextInt(101);
+                for (CsmRadarView.RoomInfo roomInfo : mRoomInfos) {
+                    if (roomInfo.getRoomId() == roomId) {
+                        mCsmSpiderWebView.updateRoomName(roomInfo.getRoomId(), "房间" + score);
+                        mCsmSpiderWebView.updateRoomScore(roomInfo.getRoomId(), score);
+                        break;
+                    }
+                }
+                break;
+            }
         }
     }
 

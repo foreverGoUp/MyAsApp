@@ -43,7 +43,7 @@ import java.util.Map;
  * 1、
  * 2、趣味性：雷达跟随手指旋转，放开回旋至默认位置。
  */
-public class CsmRadarView extends View implements GestureDetector.OnGestureListener {
+public class CsmSpiderWebView extends View implements GestureDetector.OnGestureListener {
 
 
     private static final String TAG = "CsmRadarView";
@@ -84,7 +84,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private float mOriginCircleRadius;//原点圆半径
 
 
-    public CsmRadarView(Context context, AttributeSet attrs) {
+    public CsmSpiderWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initExampleRoomInfos();
         initExampleRoomScoreMap();
@@ -109,13 +109,13 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     private void init(Context context, AttributeSet attrs) {
         //测试获取xml定义的属性
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CsmRadarView);
-        mTextColor = typedArray.getInt(R.styleable.CsmRadarView_textColor, mTextColor);
-        mPressTextColor = typedArray.getInt(R.styleable.CsmRadarView_pressTextColor, mPressTextColor);
-        mRadarLineColor = typedArray.getInt(R.styleable.CsmRadarView_radarLineColor, mRadarLineColor);
-        mScoreLineColor = typedArray.getInt(R.styleable.CsmRadarView_scoreLineColor, mScoreLineColor);
-        mTextSize = typedArray.getDimension(R.styleable.CsmRadarView_textSize, mTextSize);
+        mTextColor = typedArray.getInt(R.styleable.CsmSpiderWebView_textColor1, mTextColor);
+        mPressTextColor = typedArray.getInt(R.styleable.CsmSpiderWebView_pressTextColor1, mPressTextColor);
+        mRadarLineColor = typedArray.getInt(R.styleable.CsmSpiderWebView_radarLineColor1, mRadarLineColor);
+        mScoreLineColor = typedArray.getInt(R.styleable.CsmSpiderWebView_scoreLineColor1, mScoreLineColor);
+        mTextSize = typedArray.getDimension(R.styleable.CsmSpiderWebView_textSize1, mTextSize);
         //获得默认分数
-        int defaultScore = typedArray.getInt(R.styleable.CsmRadarView_defaultScore, mDefaultScore);
+        int defaultScore = typedArray.getInt(R.styleable.CsmSpiderWebView_defaultScore1, mDefaultScore);
         if (defaultScore > -1 && defaultScore < 101) {
             mDefaultScore = defaultScore;
         }
@@ -180,7 +180,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
 //        mCanvas = canvas;
         confirmRoomInfos();
         calculateRadius();
-        drawCircle(canvas);
+        drawSpiderWeb(canvas);
         drawLine(canvas);
         drawText(canvas);
         drawScoreLines(canvas);
@@ -359,7 +359,7 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
             }
             String roomName = mDrawRoomInfos.get(i).getRoomName();
             canvas.drawText(roomName, mLocations[i * 2], mLocations[i * 2 + 1], mTextPaint);
-//            canvas.drawCircle(mLocations[i * 2], mLocations[i * 2 + 1], mOriginCircleRadius, mOriginCirclePaint);
+//            canvas.drawSpiderWeb(mLocations[i * 2], mLocations[i * 2 + 1], mOriginCircleRadius, mOriginCirclePaint);
         }
     }
 
@@ -377,12 +377,35 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         canvas.restore();
     }
 
-    private void drawCircle(Canvas canvas) {
+    private void drawSpiderWeb(Canvas canvas) {
+        Path path = new Path();
+        double step = 2 * Math.PI / mRoomNum;
+        double angle = -Math.PI / 2;
+
         for (int i = 0; i < mCircleNum; i++) {
-            canvas.drawCircle(mCenterPoint.x, mCenterPoint.y, mRadius * (i + 1) / mCircleNum, mCirclePaint);
+            if (i != 0) {
+                path.reset();
+            }
+
+            float webR = mRadius * (i + 1) / mCircleNum;
+            for (int j = 0; j < mRoomNum; j++) {
+                float x = mCenterPoint.x + webR * (float) Math.cos(angle);
+                float y = mCenterPoint.y + webR * (float) Math.sin(angle);
+                if (j == 0) {
+                    path.moveTo(x, y);
+                } else {
+                    path.lineTo(x, y);
+                }
+                if (mRoomNum == 1) {
+                    path.lineTo(mCenterPoint.x, mCenterPoint.y);
+                }
+                if (j == mRoomNum - 1) {
+                    path.close();
+                }
+                canvas.drawPath(path, mCirclePaint);
+                angle += step;
+            }
         }
-        //画原点圆
-        canvas.drawCircle(mCenterPoint.x, mCenterPoint.y, mOriginCircleRadius, mOriginCirclePaint);
     }
 
     private int isClickedOne(MotionEvent motionEvent) {
