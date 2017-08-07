@@ -3,7 +3,6 @@ package com.kc.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.daShen.SlidingMenu.BinarySlidingMenu;
@@ -39,8 +38,8 @@ public class SlidingMenuUseActivity extends BaseActivity implements BinarySlidin
         for (int i = 0; i < 25; i++) {
             list.add("" + i);
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, list);
-        mLvLeftMenu.setAdapter(adapter);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, list);
+//        mLvLeftMenu.setAdapter(adapter);
 
 //        ListView lvContent = getViewById(R.id.list);
 //        lvContent.setAdapter(adapter);

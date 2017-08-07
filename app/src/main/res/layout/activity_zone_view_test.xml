@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.kc.activity.ZoneViewTestActivity">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
+
+    <com.daShen.zoneView.ZoneView
+        android:layout_width="match_parent"
+        android:clipChildren="false"
+        android:layout_height="match_parent"
+        android:id="@+id/zoneView"
+        android:background="#3293a9" />
+</LinearLayout>
