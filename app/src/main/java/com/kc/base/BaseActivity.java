@@ -60,6 +60,7 @@ public abstract class BaseActivity extends FragmentActivity implements INotifica
         PublicHandler.getInstant().setInterface(this);
         //更新界面文本为对应的语言
         updateLanguage();
+        initData();
     }
 
     //供子类找到布局中viwe实例的方法

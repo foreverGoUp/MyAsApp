@@ -38,6 +38,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
     testCompile 'junit:junit:4.12'
     apt 'com.zhy:mpermission-compiler:1.0.0'
 }
