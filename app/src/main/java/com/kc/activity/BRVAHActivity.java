@@ -27,6 +27,7 @@ public class BRVAHActivity extends BaseActivity {
         init();
     }
 
+
     @Override
     protected void initUI() {
         mRecyclerView = getViewById(R.id.recyclerView);
