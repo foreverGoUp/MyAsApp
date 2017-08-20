@@ -12,7 +12,6 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         tools:context="com.kc.activity.ShowCsmViewActivity">
-
         <com.kc.custom.CsmDialView
             android:id="@+id/csmDialView"
             android:layout_width="200dp"
