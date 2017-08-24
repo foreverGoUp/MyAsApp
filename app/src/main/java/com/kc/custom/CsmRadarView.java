@@ -165,13 +165,21 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         int height = MeasureSpec.getSize(heightMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST) {
+//        if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST) {
+//            width = SizeUtils.dp2px(getContext(), 200);
+//        } else if (widthMode == MeasureSpec.AT_MOST) {
+//            width = height;
+//        }
+        if (widthMode == MeasureSpec.AT_MOST) {
+            Log.e(TAG, "AT_MOST时 width=" + width);
             width = SizeUtils.dp2px(getContext(), 200);
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            width = height;
         }
+        if (heightMode == MeasureSpec.AT_MOST || heightMode == MeasureSpec.UNSPECIFIED) {
+            Log.e(TAG, "AT_MOST时 height=" + height);
+            height = width;
+        }
+        setMeasuredDimension(width, height);
         mWidth = width;
-        setMeasuredDimension(width, width);
     }
 
     @Override
@@ -239,7 +247,9 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
      */
     private void calculateRadius() {
         mRadius = mWidth / 4;//假设为1/4宽度
-        mCenterPoint.x = mCenterPoint.y = mWidth / 2;
+//        mCenterPoint.x = mCenterPoint.y = mWidth / 2;
+        mCenterPoint.x = mWidth / 2;
+        mCenterPoint.y = getMeasuredHeight() / 2;
 //        Log.e(TAG, "calculateRadius: before,center x=" + mCenterPoint.x + ",center y=" + mCenterPoint.y + ",r=" + mRadius);
 
         Rect rect = new Rect();
@@ -313,6 +323,12 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
         mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect2);
         mRadius = mWidth / 2 - getPaddingLeft() - rect2.width();
         mOriginCircleRadius = mRadius / 10;
+
+        //判断此时在垂直方向上是否会超出画布范围
+        if (mCenterPoint.y - mRadius - mTextSize * 3 / 2 < 0) {
+            mRadius = mCenterPoint.y - mTextSize * 3 / 2;
+            mOriginCircleRadius = mRadius / 10;
+        }
 //        Log.e(TAG, "calculateRadius: after,r=" + mRadius);
     }
 

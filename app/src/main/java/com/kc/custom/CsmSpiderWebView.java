@@ -97,19 +97,19 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
 //            mIndexScoreMap.put(i, random.nextInt(101));
             switch (i) {
                 case 0:
-                    indexInfo = new IndexInfo(INDEX_TYPE_OXYGEN, "示例氧度");
+                    indexInfo = new IndexInfo(INDEX_TYPE_OXYGEN, "氧度");
                     break;
                 case 1:
-                    indexInfo = new IndexInfo(INDEX_TYPE_CLEAN, "示例净度");
+                    indexInfo = new IndexInfo(INDEX_TYPE_CLEAN, "净度");
                     break;
                 case 2:
-                    indexInfo = new IndexInfo(INDEX_TYPE_LIGHT, "示例光度");
+                    indexInfo = new IndexInfo(INDEX_TYPE_LIGHT, "光度");
                     break;
                 case 3:
-                    indexInfo = new IndexInfo(INDEX_TYPE_WET, "示例湿度");
+                    indexInfo = new IndexInfo(INDEX_TYPE_WET, "湿度");
                     break;
                 case 4:
-                    indexInfo = new IndexInfo(INDEX_TYPE_TEMP, "示例温度");
+                    indexInfo = new IndexInfo(INDEX_TYPE_TEMP, "温度");
                     break;
             }
             mExampleIndexInfos.add(indexInfo);
@@ -200,13 +200,16 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         int height = MeasureSpec.getSize(heightMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST) {
+        if (widthMode == MeasureSpec.AT_MOST) {
+            Log.e(TAG, "AT_MOST时 width=" + width);
             width = SizeUtils.dp2px(getContext(), 200);
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            width = height;
         }
+        if (heightMode == MeasureSpec.AT_MOST || heightMode == MeasureSpec.UNSPECIFIED) {
+            Log.e(TAG, "AT_MOST时 height=" + height);
+            height = width;
+        }
+        setMeasuredDimension(width, height);
         mWidth = width;
-        setMeasuredDimension(width, width);
     }
 
     @Override
@@ -274,7 +277,9 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
      */
     private void calculateRadius() {
         mRadius = mWidth / 4;//假设为1/4宽度
-        mCenterPoint.x = mCenterPoint.y = mWidth / 2;
+//        mCenterPoint.x = mCenterPoint.y = mWidth / 2;
+        mCenterPoint.x = mWidth / 2;
+        mCenterPoint.y = getMeasuredHeight() / 2;
 //        Log.e(TAG, "calculateRadius: before,center x=" + mCenterPoint.x + ",center y=" + mCenterPoint.y + ",r=" + mRadius);
 
         Rect rect = new Rect();
@@ -348,6 +353,12 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         mTextPaint.getTextBounds(roomName, 0, roomName.length(), rect2);
         mRadius = mWidth / 2 - getPaddingLeft() - rect2.width();
         mOriginCircleRadius = mRadius / 10;
+
+        //判断此时在垂直方向上是否会超出画布范围
+        if (mCenterPoint.y - mRadius - mTextSize * 3 / 2 < 0) {
+            mRadius = mCenterPoint.y - mTextSize * 3 / 2;
+            mOriginCircleRadius = mRadius / 10;
+        }
 //        Log.e(TAG, "calculateRadius: after,r=" + mRadius);
     }
 
@@ -651,29 +662,33 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
         if (indexType == null) {
             Log.e(TAG, "更新指数名称失败：参数indexType为空");
         }
+        if (!mIndexScoreMap.containsKey(indexType)) {
+            Log.e(TAG, "更新指数分数失败：参数indexType不存在");
+            return;
+        }
         if (name == null) {
             Log.e(TAG, "更新指数名称失败：参数name为空");
         }
-        if (mIndexInfos == null) {
-            Log.e(TAG, "更新指数名称失败：mIndexInfos为空");
-            return;
-        }
-        boolean find = false;
-        for (IndexInfo indexInfo : mIndexInfos) {
+//        if (mIndexInfos == null) {
+//            Log.e(TAG, "更新指数名称失败：mIndexInfos为空");
+//            return;
+//        }
+        for (IndexInfo indexInfo : mDrawIndexInfos) {
             if (indexInfo.getType().equals(indexType)) {
-                find = true;
                 indexInfo.setName(getEllipsizeEndName(name));
                 break;
             }
         }
-        if (find) {
-            invalidate();
-        }
+        invalidate();
     }
 
     public void updateIndexScore(String indexType, Integer score) {
         if (indexType == null) {
             Log.e(TAG, "更新指数分数失败：参数indexType为空");
+        }
+        if (!mIndexScoreMap.containsKey(indexType)) {
+            Log.e(TAG, "更新指数分数失败：参数indexType不存在");
+            return;
         }
         if (score == null) {
             Log.e(TAG, "更新指数分数失败：参数score为空");
@@ -682,21 +697,12 @@ public class CsmSpiderWebView extends View implements GestureDetector.OnGestureL
             Log.e(TAG, "更新指数分数失败：参数score不在0-100范围内");
             return;
         }
-        if (mIndexInfos == null) {
-            Log.e(TAG, "更新指数分数失败：mIndexInfos为空");
-            return;
-        }
-        boolean find = false;
-        for (IndexInfo indexInfo : mIndexInfos) {
-            if (indexInfo.getType().equals(indexType)) {
-                find = true;
-                break;
-            }
-        }
-        if (find) {
-            mIndexScoreMap.put(indexType, score);
-            invalidate();
-        }
+//        if (mIndexInfos == null) {
+//            Log.e(TAG, "更新指数分数失败：mIndexInfos为空");
+//            return;
+//        }
+        mIndexScoreMap.put(indexType, score);
+        invalidate();
     }
 
     public void setIndexInfos(List<IndexInfo> list) {

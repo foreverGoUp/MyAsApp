@@ -77,28 +77,28 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
         }
         mCsmRadarView.setRoomInfos(mRoomInfos);
         //蜘蛛网图
-        CsmSpiderWebView.IndexInfo indexInfo = null;
-        for (int i = 0; i < 5; i++) {
-            switch (i) {
-                case 0:
-                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_OXYGEN, "氧度");
-                    break;
-                case 1:
-                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_CLEAN, "净度");
-                    break;
-                case 2:
-                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_LIGHT, "光度");
-                    break;
-                case 3:
-                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_WET, "湿度");
-                    break;
-                case 4:
-                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_TEMP, "温度");
-                    break;
-            }
-            mIndexInfos2.add(indexInfo);
-        }
-        mCsmSpiderWebView.setIndexInfos(mIndexInfos2);
+//        CsmSpiderWebView.IndexInfo indexInfo = null;
+//        for (int i = 0; i < 5; i++) {
+//            switch (i) {
+//                case 0:
+//                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_OXYGEN, "氧度");
+//                    break;
+//                case 1:
+//                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_CLEAN, "净度");
+//                    break;
+//                case 2:
+//                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_LIGHT, "光度");
+//                    break;
+//                case 3:
+//                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_WET, "湿度");
+//                    break;
+//                case 4:
+//                    indexInfo = new CsmSpiderWebView.IndexInfo(INDEX_TYPE_TEMP, "温度");
+//                    break;
+//            }
+//            mIndexInfos2.add(indexInfo);
+//        }
+//        mCsmSpiderWebView.setIndexInfos(mIndexInfos2);
     }
 
     @Override
