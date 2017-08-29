@@ -2,7 +2,6 @@ package com.kc.activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
@@ -49,17 +48,6 @@ public class RxJavaExampleActivity extends AppCompatActivity {
                 mTv.setText("thread");
             }
         }).start();
-    }
-
-    private void rxJava2Test() {
-        //在任何运行bgLooper的线程中观察结果
-        Thread thread = new Thread();
-        Looper bgLooper = null;
-        io.reactivex.Observable.just("dsd", "dfs")
-                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.from(bgLooper))
-                .subscribe();
-
-
     }
 
     private void exchangeUsage() {

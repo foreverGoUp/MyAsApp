@@ -1,6 +1,7 @@
 package com.kc.activity;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 
 import com.kc.myasapp.R;
@@ -31,8 +32,53 @@ public class RxJava2UseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rx_java2_use);
     }
 
-    private void schedulerUse() {
+    /**
+     * 我们便知道了Flowable是为了应对Backpressure而产生的。
+     * Flowable是一个被观察者，与Subscriber(观察者)配合使用，解决Backpressure问题。
+     */
+    private void flowableUse() {
 
+    }
+
+
+    /**
+     * 调度器的使用
+     */
+    private void schedulerUse() {
+        //1、io():I/O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。
+        // 行为模式和 newThread() 差不多，区别在于 io() 的内部实现是用一个无数量上限的线程池，
+        // 可以重用空闲的线程，因此多数情况下 io() 比 newThread() 更有效率。不要把计算工作放在 io() 中
+        // ，可以避免创建不必要的线程。
+        //2、computation():计算所使用的 Scheduler。
+        // 这个计算指的是 CPU 密集型计算，即不会被 I/O 等操作限制性能的操作，
+        // 例如图形的计算。这个 Scheduler 使用的固定的线程池，大小为 CPU 核数。
+        // 不要把 I/O 操作放在 computation() 中，否则 I/O 操作的等待时间会浪费 CPU。
+        //3、immediate(): 直接在当前线程运行，相当于不指定线程。这是默认的 Scheduler。
+        //4、newThread(): 总是启用新线程，并在新线程执行操作。
+        //5、Android 还有一个专用的 AndroidSchedulers.mainThread()，它指定的操作将在 Android 主线程运行。
+        Observable.just("sd")
+                .subscribeOn(Schedulers.io())//或者
+                .subscribeOn(Schedulers.computation())//或者
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        //观察者处理结果
+                    }
+                });
+
+        //在任何运行bgLooper的线程中观察结果
+        Thread thread = new Thread();
+        Looper bgLooper = null;
+        io.reactivex.Observable.just("dsd", "dfs")
+                .observeOn(AndroidSchedulers.from(bgLooper))
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        //观察者处理结果
+                    }
+                });
     }
 
     /**
