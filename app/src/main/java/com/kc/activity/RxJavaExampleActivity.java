@@ -59,6 +59,7 @@ public class RxJavaExampleActivity extends AppCompatActivity {
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.from(bgLooper))
                 .subscribe();
 
+
     }
 
     private void exchangeUsage() {
