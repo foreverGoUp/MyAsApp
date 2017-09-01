@@ -103,7 +103,6 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
 
     @Override
     protected void initData() {
-
     }
 
     @Override

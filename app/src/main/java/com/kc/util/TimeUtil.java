@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class TimeUtil {
 
+
     /**
      * <p>
      * 将录像时长转化为列表显示模式，比如"01:01:30"
@@ -118,7 +119,7 @@ public class TimeUtil {
      * @flag 0 返回yyyy-MM-dd 00:00:00日期<br>
      * 1 返回yyyy-MM-dd 23:59:59日期
      */
-    public static Date getConvertDate(Date date, int flag) {
+    public static Date getDateBeginOrEnd(Date date, int flag) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int hour = cal.get(Calendar.HOUR_OF_DAY);

@@ -3,6 +3,8 @@ package com.kc.util;
 import android.app.Application;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.Utils;
+
 /**
  * Created by Administrator on 2017/1/15.
  */
@@ -14,6 +16,7 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         mMyApp = this;
+        Utils.init(this);
     }
 
     public static Application getContext() {

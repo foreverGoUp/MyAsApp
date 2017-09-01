@@ -9,9 +9,15 @@
         android:id="@+id/llayout_show_csm_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:gravity="right"
         android:orientation="vertical"
         tools:context="com.kc.activity.ShowCsmViewActivity">
+
+        <com.kc.custom.timeAxis.CsmTimeAxis
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#80ff0000"
+            android:layout_marginTop="@dimen/common_blank_nor" />
         <com.kc.custom.CsmDialView
             android:visibility="gone"
             android:id="@+id/csmDialView"
