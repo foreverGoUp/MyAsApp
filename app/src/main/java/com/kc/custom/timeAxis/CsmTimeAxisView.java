@@ -182,6 +182,7 @@ public class CsmTimeAxisView extends View {
         int size = 24 * 60 / INTERVAL_MINUTE;//
         final int reference = 60 / INTERVAL_MINUTE;
         final int markLineAreaHeight = getHeight() - mNormalMarkTimeMarginTop - mNormalMarkTimeTextSize - getPaddingBottom() - getPaddingTop();
+        Log.e(TAG, "!!!drawNormalMarks: markLineAreaHeight=" + markLineAreaHeight);
         mMarkLineAreaHeight = markLineAreaHeight;
         final int timeMarkY = mNormalMarkTimeMarginTop + mNormalMarkTimeTextSize;
         final int hourMarkHeight = markLineAreaHeight;

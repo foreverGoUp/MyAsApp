@@ -16,7 +16,12 @@
         android:layout_alignParentRight="true"
         android:text="00:00:00" />
 
+    <com.kc.custom.timeAxis.CsmTimeAxisLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"></com.kc.custom.timeAxis.CsmTimeAxisLayout>
+
     <com.kc.custom.timeAxis.CsmTimeAxisView
+        android:visibility="gone"
         android:id="@+id/csmTimeAxis"
         android:layout_width="match_parent"
         android:layout_height="150dp"
