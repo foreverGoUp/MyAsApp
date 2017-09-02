@@ -20,6 +20,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by ckc on 2017/9/1.
@@ -48,6 +55,9 @@ public class CsmTimeAxis extends View {
     private Date mCurrentDate;
 
     private List<EZDeviceRecordFile> mTestDatas;
+    private List<EZDeviceRecordFile> mDatas;
+
+    private Disposable mAutoForwardDisposable;
 
     public CsmTimeAxis(Context context) {
         super(context);
@@ -81,21 +91,25 @@ public class CsmTimeAxis extends View {
 
     private void initTestDatas() {
         mTestDatas = new ArrayList<>();
-        EZDeviceRecordFile ezDeviceRecordFile = new EZDeviceRecordFile();
-        Calendar calendar = Calendar.getInstance();
-        Log.e(TAG, "initTestDatas: calendar1=" + calendar.hashCode());
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR_OF_DAY, 1);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        ezDeviceRecordFile.setStartTime(calendar);
-        calendar = Calendar.getInstance();
-        Log.e(TAG, "initTestDatas: calendar2=" + calendar.hashCode());
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR_OF_DAY, 2);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        ezDeviceRecordFile.setStopTime(calendar);
+        EZDeviceRecordFile ezDeviceRecordFile;
+        for (int i = 0; i < 3; i++) {
+            ezDeviceRecordFile = new EZDeviceRecordFile();
+            Calendar calendar = Calendar.getInstance();
+            Log.e(TAG, "initTestDatas: calendar1=" + calendar.hashCode());
+            calendar.setTime(new Date());
+            calendar.set(Calendar.HOUR_OF_DAY, i * 2 + 1);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            ezDeviceRecordFile.setStartTime(calendar);
+            calendar = Calendar.getInstance();
+            Log.e(TAG, "initTestDatas: calendar2=" + calendar.hashCode());
+            calendar.setTime(new Date());
+            calendar.set(Calendar.HOUR_OF_DAY, i * 2 + 2);
+            calendar.set(Calendar.MINUTE, 30);
+            calendar.set(Calendar.SECOND, 30);
+            ezDeviceRecordFile.setStopTime(calendar);
+            mTestDatas.add(ezDeviceRecordFile);
+        }
     }
 
     @Override
@@ -115,7 +129,9 @@ public class CsmTimeAxis extends View {
         super.onDraw(canvas);
         drawTopBottomLine(canvas);
         drawNormalMarks(canvas);
-        drawDataMarks(canvas);
+        if (mDatas != null) {
+            drawDataMarks(canvas);
+        }
     }
 
     private void drawDataMarks(Canvas canvas) {
@@ -127,16 +143,16 @@ public class CsmTimeAxis extends View {
         EZDeviceRecordFile ezDeviceRecordFile;
         Path path = new Path();
         float coordinateXMoveDis;
-        float dataMarkAreaWidth = 0;
+        float dataMarkAreaWidth;
         for (int i = 0; i < size; i++) {
             path.reset();
             ezDeviceRecordFile = mTestDatas.get(i);
             coordinateXMoveDis = getCoordinateXMoveDis(ezDeviceRecordFile.getStartTime());
             canvas.translate(coordinateXMoveDis, 0);
             path.moveTo(0, 0);
-            path.lineTo(0, markLineAreaHeight);
+            path.lineTo(0, -markLineAreaHeight);
             dataMarkAreaWidth = getDataMarkAreaWidth(ezDeviceRecordFile.getStartTime(), ezDeviceRecordFile.getStopTime());
-            path.lineTo(dataMarkAreaWidth, markLineAreaHeight);
+            path.lineTo(dataMarkAreaWidth, -markLineAreaHeight);
             path.lineTo(dataMarkAreaWidth, 0);
             path.close();
             canvas.drawPath(path, mDataMarkPaint);
@@ -271,6 +287,12 @@ public class CsmTimeAxis extends View {
         return consume;
     }
 
+    private void callbackAutoForwardTime() {
+        if (mListener != null) {
+            mListener.onTimeAxisMove(getCurrentTime().getTime());
+        }
+    }
+
     private void callbackTimeBeginOrEnd(boolean isBegin) {
         if (mCurrentDate == null) {
             mCurrentDate = new Date();
@@ -315,6 +337,40 @@ public class CsmTimeAxis extends View {
         void onTimeAxisMove(long timeMilli);
 
         void onTimeAxisStop(long timeMilli);
+    }
+
+    private Date getCurrentTime() {
+        if (mCurrentDate == null) {
+            mCurrentDate = new Date();
+        }
+        return mCurrentDate;
+    }
+
+    public void startAutoForward() {
+        Log.e(TAG, "startAutoForward: ！！！");
+        mAutoForwardDisposable = Observable.interval(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        Log.e(TAG, "时间轴正在自动前进...");
+                        setCurrentTime(getCurrentTime().getTime() + 1000);
+                        callbackAutoForwardTime();
+                    }
+                });
+    }
+
+    public void stopAutoForward() {
+        if (mAutoForwardDisposable != null && !mAutoForwardDisposable.isDisposed()) {
+            Log.e(TAG, "stopAutoForward: ！！！");
+            mAutoForwardDisposable.dispose();
+        }
+    }
+
+    public void setData(List<EZDeviceRecordFile> datas) {
+        mDatas = datas;
+        invalidate();
     }
 
     public void setCurrentTime(Calendar calendar) {

@@ -205,6 +205,16 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
         testCsmTimeAxis();
     }
 
+    @OnClick(R.id.bt_test1)
+    void clickTestBt1() {
+        mCsmTimeAxis.startAutoForward();
+    }
+
+    @OnClick(R.id.bt_test2)
+    void clickTestBt2() {
+        mCsmTimeAxis.stopAutoForward();
+    }
+
     private void test() {
         for (int i = 0; i < 9; i++) {
             Log.d(TAG, "test: i=" + i);
