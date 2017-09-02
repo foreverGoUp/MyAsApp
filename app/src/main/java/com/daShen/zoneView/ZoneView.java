@@ -31,6 +31,7 @@ import java.util.List;
 
 /**
  * Created by yorun on 2017/7/19.
+ * 设备顺序：灯光，空调，窗帘，窗户，插座，新风，地暖，加湿器，扫地机，空气净化器，音乐播放器
  */
 
 public class ZoneView extends RelativeLayout {

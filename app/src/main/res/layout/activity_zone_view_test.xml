@@ -12,8 +12,8 @@
 
     <com.daShen.zoneView.ZoneView
         android:layout_width="match_parent"
-        android:clipChildren="false"
         android:layout_height="match_parent"
+        android:clipChildren="false"
         android:id="@+id/zoneView"
         android:background="#3293a9" />
 </LinearLayout>

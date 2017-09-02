@@ -21,6 +21,14 @@ public class AppConstant {
 
     public static boolean hasUserForcedOffline = false;// 用户是否被挤掉
     //默认值
+    /*空调相关（可作为最低温，最高温判断范围）：
+
+    制热模式：温度范围16℃~30℃
+    送风模式：温度固定24℃，不可调节温度
+    制冷模式：温度范围18℃~30℃
+    除湿模式：温度范围18℃~30℃
+    自动模式：温度范围18℃~30℃
+    */
     public static final int JURISDICTION_NUM = 4;//未分配设备的房间id
     public static final int DEFAULT_UNALLOCATED_ROOM_ID = 0;//未分配设备的房间id
     public static final int MAX_AIR_TEMP = 30;

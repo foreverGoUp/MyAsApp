@@ -7,17 +7,24 @@
         xmlns:radar="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/llayout_show_csm_view_container"
+        android:background="#fff"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.kc.activity.ShowCsmViewActivity">
 
+        <TextView
+            android:id="@+id/tv_time_axis_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="00:00:00" />
+
         <com.kc.custom.timeAxis.CsmTimeAxis
+            android:id="@+id/csmTimeAxis"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:paddingTop="@dimen/common_blank_nor"
-            android:paddingBottom="@dimen/common_blank_nor"
-            android:background="#80ff0000"
-            android:layout_marginTop="@dimen/common_blank_nor" />
+            android:paddingBottom="@dimen/common_blank_nor" />
         <com.kc.custom.CsmDialView
             android:visibility="gone"
             android:id="@+id/csmDialView"

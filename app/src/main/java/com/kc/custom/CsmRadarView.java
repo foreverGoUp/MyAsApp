@@ -195,9 +195,10 @@ public class CsmRadarView extends View implements GestureDetector.OnGestureListe
     }
 
     private void confirmRoomInfos() {
-        mDrawRoomInfos = mRoomInfos;
-        if (mDrawRoomInfos == null || mDrawRoomInfos.size() == 0) {
+        if (mRoomInfos == null || mRoomInfos.size() == 0) {
             mDrawRoomInfos = mExampleRoomInfos;
+        } else {
+            mDrawRoomInfos = mRoomInfos;
         }
         mRoomNum = mDrawRoomInfos.size();
     }

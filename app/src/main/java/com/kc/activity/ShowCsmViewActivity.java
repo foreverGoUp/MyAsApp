@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.blankj.utilcode.util.TimeUtils;
 import com.kc.base.BaseActivity;
 import com.kc.custom.CsmDialView;
 import com.kc.custom.CsmRadarView;
 import com.kc.custom.CsmSpiderWebView;
+import com.kc.custom.timeAxis.CsmTimeAxis;
 import com.kc.myasapp.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,7 +27,7 @@ import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_TEMP;
 import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_WET;
 
 public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnCsmDialViewColorChanged
-        , View.OnClickListener, CsmRadarView.OnCsmRadarViewClickListener {
+        , View.OnClickListener, CsmRadarView.OnCsmRadarViewClickListener, CsmTimeAxis.OnCsmTimeAxisListener {
 
     private static final String TAG = "ShowCsmViewActivity";
 
@@ -32,6 +36,10 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     private CsmSpiderWebView mCsmSpiderWebView;
     private List<CsmRadarView.RoomInfo> mRoomInfos = new ArrayList<>(8);
     private List<CsmSpiderWebView.IndexInfo> mIndexInfos2 = new ArrayList<>(5);
+
+    //时间轴
+    private CsmTimeAxis mCsmTimeAxis;
+    private TextView mTvTimeAxisTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,10 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
         //蜘蛛网图
         mCsmSpiderWebView = (CsmSpiderWebView) findViewById(R.id.csmSpiderWebView);
         mCsmSpiderWebView.setOnClickListener(this);
+        //时间轴
+        mCsmTimeAxis = getViewById(R.id.csmTimeAxis);
+        mCsmTimeAxis.setListener(this);
+        mTvTimeAxisTime = getViewById(R.id.tv_time_axis_time);
 
         //以下格式中的2表示字符串至少占2位，若只要一位则空格补前
 //        String format = "%2d";
@@ -185,5 +197,15 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     @Override
     public void onCsmRadarViewClick(int pos, int roomId) {
         showToast("点击了pos=" + pos);
+    }
+
+    @Override
+    public void onTimeAxisMove(long timeMilli) {
+        mTvTimeAxisTime.setText("移动：" + TimeUtils.millis2String(timeMilli, new SimpleDateFormat("HH:mm:ss")));
+    }
+
+    @Override
+    public void onTimeAxisStop(long timeMilli) {
+        mTvTimeAxisTime.setText("停止：" + TimeUtils.millis2String(timeMilli, new SimpleDateFormat("HH:mm:ss")));
     }
 }
