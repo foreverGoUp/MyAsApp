@@ -17,6 +17,7 @@
         android:text="00:00:00" />
 
     <com.kc.custom.timeAxis.CsmTimeAxisLayout
+        android:id="@+id/csmTimeAxisLayout"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         kc:timeAxisViewPadding="5dp"

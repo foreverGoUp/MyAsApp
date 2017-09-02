@@ -133,6 +133,7 @@ public class CsmTimeAxisView extends View {
         super.onDraw(canvas);
         drawTopBottomLine(canvas);
         drawNormalMarks(canvas);
+        mDatas = mTestDatas;
         if (mDatas != null) {
             drawDataMarks(canvas);
         }
@@ -248,6 +249,7 @@ public class CsmTimeAxisView extends View {
         super.computeScroll();
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            callbackTime(true);
             invalidate();
         }
     }
@@ -300,15 +302,12 @@ public class CsmTimeAxisView extends View {
     }
 
     private void callbackTimeBeginOrEnd(boolean isBegin) {
-        if (mCurrentDate == null) {
-            mCurrentDate = new Date();
-        }
         Date date;
         long timeMilli;
         if (isBegin) {
-            date = TimeUtil.getDateBeginOrEnd(mCurrentDate, TimeUtil.FLAG_DAY_BEGIN);
+            date = TimeUtil.getDateBeginOrEnd(getCurrentTime(), TimeUtil.FLAG_DAY_BEGIN);
         } else {
-            date = TimeUtil.getDateBeginOrEnd(mCurrentDate, TimeUtil.FLAG_DAY_END);
+            date = TimeUtil.getDateBeginOrEnd(getCurrentTime(), TimeUtil.FLAG_DAY_END);
         }
         timeMilli = date.getTime();
         if (mListener != null) {
@@ -317,11 +316,7 @@ public class CsmTimeAxisView extends View {
     }
 
     private void callbackTime(boolean isMoving) {
-        if (mCurrentDate == null) {
-            mCurrentDate = new Date();
-        }
-
-        Date dateBegin = TimeUtil.getDateBeginOrEnd(mCurrentDate, TimeUtil.FLAG_DAY_BEGIN);
+        Date dateBegin = TimeUtil.getDateBeginOrEnd(getCurrentTime(), TimeUtil.FLAG_DAY_BEGIN);
         long timeBeginMilli = dateBegin.getTime();
         int scrollX = getScrollX();
         int intervalSeconds = (int) (scrollX / SECOND_WIDTH);
@@ -353,6 +348,9 @@ public class CsmTimeAxisView extends View {
     }
 
     public void startAutoForward() {
+        if (mAutoForwardDisposable != null && !mAutoForwardDisposable.isDisposed()) {
+            return;
+        }
         Log.e(TAG, "startAutoForward: ！！！");
         mAutoForwardDisposable = Observable.interval(1, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
