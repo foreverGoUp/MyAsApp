@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.kc.base.BaseActivity;
 import com.kc.custom.CsmDialView;
@@ -27,7 +27,7 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
 
     private static final String TAG = "ShowCsmViewActivity";
 
-    private LinearLayout mContainer;
+    private RelativeLayout mContainer;
     private CsmRadarView mCsmRadarView;
     private CsmSpiderWebView mCsmSpiderWebView;
     private List<CsmRadarView.RoomInfo> mRoomInfos = new ArrayList<>(8);
@@ -43,7 +43,7 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
 
     @Override
     protected void initUI() {
-        mContainer = (LinearLayout) findViewById(R.id.llayout_show_csm_view_container);
+        mContainer = (RelativeLayout) findViewById(R.id.llayout_show_csm_view_container);
         //仿仪表盘
         CsmDialView view = (CsmDialView) findViewById(R.id.csmDialView);
         view.setOnClickListener(this);

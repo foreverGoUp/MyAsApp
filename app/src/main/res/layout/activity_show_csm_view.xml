@@ -3,19 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:radar="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/llayout_show_csm_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="right"
-        android:orientation="vertical"
         tools:context="com.kc.activity.ShowCsmViewActivity">
 
         <com.kc.custom.timeAxis.CsmTimeAxis
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:paddingTop="@dimen/common_blank_nor"
+            android:paddingBottom="@dimen/common_blank_nor"
             android:background="#80ff0000"
             android:layout_marginTop="@dimen/common_blank_nor" />
         <com.kc.custom.CsmDialView
@@ -25,6 +25,7 @@
             android:layout_height="250dp" />
 
         <com.kc.custom.CsmRadarView
+            android:visibility="gone"
             android:id="@+id/csmRadarView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -37,6 +38,7 @@
             radar:defaultScore="100" />
 
         <com.kc.custom.CsmSpiderWebView
+            android:visibility="gone"
             android:id="@+id/csmSpiderWebView"
             android:layout_width="match_parent"
             android:layout_height="400dp"
@@ -49,11 +51,12 @@
             radar:defaultScore1="100" />
 
         <com.kc.custom.test.CsmButton
+            android:visibility="gone"
             android:id="@+id/csmButton"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:gravity="center"
             android:onClick="onClick"
             android:text="测试点击事件" />
-    </LinearLayout>
+    </RelativeLayout>
 </ScrollView>
