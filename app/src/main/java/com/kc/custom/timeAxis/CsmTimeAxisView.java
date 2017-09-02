@@ -32,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by ckc on 2017/9/1.
  */
 
-public class CsmTimeAxis extends View {
+public class CsmTimeAxisView extends View {
 
     private static final String TAG = "CsmTimeAxis";
     private final float SECOND_WIDTH = 0.08f;//px
@@ -59,12 +59,14 @@ public class CsmTimeAxis extends View {
 
     private Disposable mAutoForwardDisposable;
 
-    public CsmTimeAxis(Context context) {
+    private float mMarkLineAreaHeight;
+
+    public CsmTimeAxisView(Context context) {
         super(context);
         init(context, null);
     }
 
-    public CsmTimeAxis(Context context, @Nullable AttributeSet attrs) {
+    public CsmTimeAxisView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
@@ -180,6 +182,7 @@ public class CsmTimeAxis extends View {
         int size = 24 * 60 / INTERVAL_MINUTE;//
         final int reference = 60 / INTERVAL_MINUTE;
         final int markLineAreaHeight = getHeight() - mNormalMarkTimeMarginTop - mNormalMarkTimeTextSize - getPaddingBottom() - getPaddingTop();
+        mMarkLineAreaHeight = markLineAreaHeight;
         final int timeMarkY = mNormalMarkTimeMarginTop + mNormalMarkTimeTextSize;
         final int hourMarkHeight = markLineAreaHeight;
         final int intervalMarkHeight = markLineAreaHeight * 1 / 3;
@@ -394,6 +397,17 @@ public class CsmTimeAxis extends View {
         }
         mScroller.startScroll(getScrollX(), getScrollY(), dx, 0);
         invalidate();
+    }
+
+    public float getMarkLineAreaHeight() {
+        return mMarkLineAreaHeight;
+    }
+
+    /**
+     * x轴方向红线到view底部的高度
+     */
+    public float getOffsetBottomHeight() {
+        return getPaddingBottom() + mNormalMarkTimeMarginTop + mNormalMarkTimeTextSize;
     }
 
     /**

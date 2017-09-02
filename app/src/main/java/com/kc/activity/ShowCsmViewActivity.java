@@ -12,7 +12,7 @@ import com.kc.base.BaseActivity;
 import com.kc.custom.CsmDialView;
 import com.kc.custom.CsmRadarView;
 import com.kc.custom.CsmSpiderWebView;
-import com.kc.custom.timeAxis.CsmTimeAxis;
+import com.kc.custom.timeAxis.CsmTimeAxisView;
 import com.kc.myasapp.R;
 
 import java.text.SimpleDateFormat;
@@ -30,7 +30,7 @@ import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_TEMP;
 import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_WET;
 
 public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnCsmDialViewColorChanged
-        , View.OnClickListener, CsmRadarView.OnCsmRadarViewClickListener, CsmTimeAxis.OnCsmTimeAxisListener {
+        , View.OnClickListener, CsmRadarView.OnCsmRadarViewClickListener, CsmTimeAxisView.OnCsmTimeAxisListener {
 
     private static final String TAG = "ShowCsmViewActivity";
 
@@ -41,7 +41,7 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     private List<CsmSpiderWebView.IndexInfo> mIndexInfos2 = new ArrayList<>(5);
 
     //时间轴
-    private CsmTimeAxis mCsmTimeAxis;
+    private CsmTimeAxisView mCsmTimeAxis;
     private TextView mTvTimeAxisTime;
 
     @Override
