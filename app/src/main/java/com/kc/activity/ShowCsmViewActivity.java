@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.blankj.utilcode.util.TimeUtils;
 import com.kc.base.BaseActivity;
@@ -15,7 +14,6 @@ import com.kc.custom.CsmSpiderWebView;
 import com.kc.custom.timeAxis.CsmTimeAxisView;
 import com.kc.myasapp.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,8 +39,8 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     private List<CsmSpiderWebView.IndexInfo> mIndexInfos2 = new ArrayList<>(5);
 
     //时间轴
-    private CsmTimeAxisView mCsmTimeAxis;
-    private TextView mTvTimeAxisTime;
+//    private CsmTimeAxisView mCsmTimeAxis;
+//    private TextView mTvTimeAxisTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +66,9 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
         mCsmSpiderWebView = (CsmSpiderWebView) findViewById(R.id.csmSpiderWebView);
         mCsmSpiderWebView.setOnClickListener(this);
         //时间轴
-        mCsmTimeAxis = getViewById(R.id.csmTimeAxis);
-        mCsmTimeAxis.setListener(this);
-        mTvTimeAxisTime = getViewById(R.id.tv_time_axis_time);
+//        mCsmTimeAxis = getViewById(R.id.csmTimeAxis);
+//        mCsmTimeAxis.setListener(this);
+//        mTvTimeAxisTime = getViewById(R.id.tv_time_axis_time);
 
         //以下格式中的2表示字符串至少占2位，若只要一位则空格补前
 //        String format = "%2d";
@@ -130,9 +128,6 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.csmTimeAxis:
-                testCsmTimeAxis();
-                break;
             case R.id.csmDialView:
                 ((CsmDialView) view).startAnimation(250);
                 test();
@@ -196,23 +191,23 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
         long curTimeMilli = System.currentTimeMillis();
         long resultTimeMillis = curTimeMilli + random.nextInt(maxSeconds) * 1000;
         Log.e(TAG, "时间轴移动到：" + TimeUtils.millis2String(resultTimeMillis));
-        mCsmTimeAxis.setCurrentTime(resultTimeMillis);
+//        mCsmTimeAxis.setCurrentTime(resultTimeMillis);
 
     }
 
     @OnClick(R.id.bt_test)
     void clickTestBt() {
-        testCsmTimeAxis();
+//        testCsmTimeAxis();
     }
 
     @OnClick(R.id.bt_test1)
     void clickTestBt1() {
-        mCsmTimeAxis.startAutoForward();
+//        mCsmTimeAxis.startAutoForward();
     }
 
     @OnClick(R.id.bt_test2)
     void clickTestBt2() {
-        mCsmTimeAxis.stopAutoForward();
+//        mCsmTimeAxis.stopAutoForward();
     }
 
     private void test() {
@@ -233,11 +228,11 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
 
     @Override
     public void onTimeAxisMove(long timeMilli) {
-        mTvTimeAxisTime.setText("移动：" + TimeUtils.millis2String(timeMilli, new SimpleDateFormat("HH:mm:ss")));
+//        mTvTimeAxisTime.setText("移动：" + TimeUtils.millis2String(timeMilli, new SimpleDateFormat("HH:mm:ss")));
     }
 
     @Override
     public void onTimeAxisStop(long timeMilli) {
-        mTvTimeAxisTime.setText("停止：" + TimeUtils.millis2String(timeMilli, new SimpleDateFormat("HH:mm:ss")));
+//        mTvTimeAxisTime.setText("停止：" + TimeUtils.millis2String(timeMilli, new SimpleDateFormat("HH:mm:ss")));
     }
 }

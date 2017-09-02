@@ -45,4 +45,12 @@
     <declare-styleable name="BinarySlidingMenu">
         <attr name="rightPadding" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="CsmTimeAxisLayout">
+        <attr name="timeTextViewBackground" format="integer" />
+        <attr name="timeTextViewTextColor" format="color" />
+        <attr name="timeAxisViewPadding" format="dimension" />
+        <!--<attr name="timeAxisViewHeight" format="dimension"/>-->
+        <attr name="indicatorViewWidth" format="dimension" />
+    </declare-styleable>
 </resources>

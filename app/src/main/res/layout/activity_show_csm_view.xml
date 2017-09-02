@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:radar="http://schemas.android.com/apk/res-auto"
+    xmlns:kc="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llayout_show_csm_view_container"
     android:layout_width="match_parent"
@@ -18,15 +18,19 @@
 
     <com.kc.custom.timeAxis.CsmTimeAxisLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"></com.kc.custom.timeAxis.CsmTimeAxisLayout>
+        android:layout_height="200dp"
+        kc:timeAxisViewPadding="5dp"
+        kc:indicatorViewWidth="2dp"
+        kc:timeTextViewBackground="@drawable/shape_time_axis_textview_bg"
+        kc:timeTextViewTextColor="#fff" />
 
-    <com.kc.custom.timeAxis.CsmTimeAxisView
+    <!--<com.kc.custom.timeAxis.CsmTimeAxisView
         android:visibility="gone"
         android:id="@+id/csmTimeAxis"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:paddingBottom="@dimen/common_blank_nor"
-        android:paddingTop="@dimen/common_blank_nor" />
+        android:paddingTop="@dimen/common_blank_nor" />-->
 
     <com.kc.custom.CsmDialView
         android:id="@+id/csmDialView"
@@ -41,11 +45,11 @@
         android:layout_marginTop="@dimen/common_blank_nor"
         android:background="#50ff0000"
         android:visibility="gone"
-        radar:defaultScore="100"
-        radar:pressTextColor="#ffffff"
-        radar:radarLineColor="#fff"
-        radar:textColor="#000"
-        radar:textSize="10dp" />
+        kc:defaultScore="100"
+        kc:pressTextColor="#ffffff"
+        kc:radarLineColor="#fff"
+        kc:textColor="#000"
+        kc:textSize="10dp" />
 
     <com.kc.custom.CsmSpiderWebView
         android:id="@+id/csmSpiderWebView"
@@ -54,11 +58,11 @@
         android:layout_marginTop="@dimen/common_blank_nor"
         android:background="#80ff0000"
         android:visibility="gone"
-        radar:defaultScore1="100"
-        radar:pressTextColor1="#ffffff"
-        radar:radarLineColor1="#fff"
-        radar:textColor1="#000"
-        radar:textSize1="10dp" />
+        kc:defaultScore1="100"
+        kc:pressTextColor1="#ffffff"
+        kc:radarLineColor1="#fff"
+        kc:textColor1="#000"
+        kc:textSize1="10dp" />
 
     <com.kc.custom.test.CsmButton
         android:id="@+id/csmButton"

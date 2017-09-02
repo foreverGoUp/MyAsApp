@@ -72,6 +72,7 @@ public class CsmTimeAxisView extends View {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        Log.e(TAG, "init>>>>>>>>>>>>>>");
         initTestDatas();
 
         mNormalMarkPaint = new Paint();
@@ -97,14 +98,14 @@ public class CsmTimeAxisView extends View {
         for (int i = 0; i < 3; i++) {
             ezDeviceRecordFile = new EZDeviceRecordFile();
             Calendar calendar = Calendar.getInstance();
-            Log.e(TAG, "initTestDatas: calendar1=" + calendar.hashCode());
+//            Log.e(TAG, "initTestDatas: calendar1=" + calendar.hashCode());
             calendar.setTime(new Date());
             calendar.set(Calendar.HOUR_OF_DAY, i * 2 + 1);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             ezDeviceRecordFile.setStartTime(calendar);
             calendar = Calendar.getInstance();
-            Log.e(TAG, "initTestDatas: calendar2=" + calendar.hashCode());
+//            Log.e(TAG, "initTestDatas: calendar2=" + calendar.hashCode());
             calendar.setTime(new Date());
             calendar.set(Calendar.HOUR_OF_DAY, i * 2 + 2);
             calendar.set(Calendar.MINUTE, 30);
@@ -123,6 +124,7 @@ public class CsmTimeAxisView extends View {
             height = (int) DEFAULT_HEIGHT;
         }
         int width = (int) (SCREEN_WIDTH + 24 * 3600 * SECOND_WIDTH);
+        Log.e(TAG, "onMeasure: height=" + height);
         setMeasuredDimension(width, height);
     }
 
