@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
@@ -14,8 +16,10 @@ import com.kc.util.ScreenUtils;
 import com.kc.util.SizeUtils;
 import com.kc.util.TimeUtil;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by ckc on 2017/9/1.
@@ -23,6 +27,7 @@ import java.util.Date;
 
 public class CsmTimeAxis extends View {
 
+    private static final String TAG = "CsmTimeAxis";
     private final float SECOND_WIDTH = 0.08f;//px
     private final float DEFAULT_HEIGHT = 400;//px
     private final float SCREEN_WIDTH = ScreenUtils.getScreenWidth(getContext());//px
@@ -32,7 +37,7 @@ public class CsmTimeAxis extends View {
     private int mNormalMarkTimeMarginTop = 10;//px
     private int mNormalMarkTimeTextSize = SizeUtils.sp2px(getContext(), 13);
 
-    private Paint mNormalMarkPaint;
+    private Paint mNormalMarkPaint, mDataMarkPaint;
 
     private OnCsmTimeAxisListener mListener;
 
@@ -41,6 +46,8 @@ public class CsmTimeAxis extends View {
     private Scroller mScroller = new Scroller(getContext());
 
     private Date mCurrentDate;
+
+    private List<EZDeviceRecordFile> mTestDatas;
 
     public CsmTimeAxis(Context context) {
         super(context);
@@ -53,6 +60,8 @@ public class CsmTimeAxis extends View {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        initTestDatas();
+
         mNormalMarkPaint = new Paint();
         mNormalMarkPaint.setAntiAlias(true);
         mNormalMarkPaint.setStyle(Paint.Style.STROKE);
@@ -61,6 +70,32 @@ public class CsmTimeAxis extends View {
         mNormalMarkPaint.setStrokeWidth(2);
         mNormalMarkPaint.setTextSize(mNormalMarkTimeTextSize);
         mNormalMarkPaint.setTextAlign(Paint.Align.CENTER);
+
+        mDataMarkPaint = new Paint();
+        mDataMarkPaint.setAntiAlias(true);
+        mDataMarkPaint.setStyle(Paint.Style.FILL);
+//        mDataMarkPaint.setColor(Color.parseColor("#cdcdcd"));
+        mDataMarkPaint.setColor(Color.parseColor("#80ff0000"));
+        mDataMarkPaint.setStrokeWidth(1);
+    }
+
+    private void initTestDatas() {
+        mTestDatas = new ArrayList<>();
+        EZDeviceRecordFile ezDeviceRecordFile = new EZDeviceRecordFile();
+        Calendar calendar = Calendar.getInstance();
+        Log.e(TAG, "initTestDatas: calendar1=" + calendar.hashCode());
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        ezDeviceRecordFile.setStartTime(calendar);
+        calendar = Calendar.getInstance();
+        Log.e(TAG, "initTestDatas: calendar2=" + calendar.hashCode());
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 2);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        ezDeviceRecordFile.setStopTime(calendar);
     }
 
     @Override
@@ -80,6 +115,49 @@ public class CsmTimeAxis extends View {
         super.onDraw(canvas);
         drawTopBottomLine(canvas);
         drawNormalMarks(canvas);
+        drawDataMarks(canvas);
+    }
+
+    private void drawDataMarks(Canvas canvas) {
+        canvas.save();
+        final int markLineAreaHeight = getHeight() - mNormalMarkTimeMarginTop - mNormalMarkTimeTextSize - getPaddingBottom() - getPaddingTop();
+        //先把坐标系移动到00:00位置
+        canvas.translate(SCREEN_WIDTH / 2, markLineAreaHeight + getPaddingTop());
+        int size = mTestDatas.size();
+        EZDeviceRecordFile ezDeviceRecordFile;
+        Path path = new Path();
+        float coordinateXMoveDis;
+        float dataMarkAreaWidth = 0;
+        for (int i = 0; i < size; i++) {
+            path.reset();
+            ezDeviceRecordFile = mTestDatas.get(i);
+            coordinateXMoveDis = getCoordinateXMoveDis(ezDeviceRecordFile.getStartTime());
+            canvas.translate(coordinateXMoveDis, 0);
+            path.moveTo(0, 0);
+            path.lineTo(0, markLineAreaHeight);
+            dataMarkAreaWidth = getDataMarkAreaWidth(ezDeviceRecordFile.getStartTime(), ezDeviceRecordFile.getStopTime());
+            path.lineTo(dataMarkAreaWidth, markLineAreaHeight);
+            path.lineTo(dataMarkAreaWidth, 0);
+            path.close();
+            canvas.drawPath(path, mDataMarkPaint);
+            //将坐标恢复到00:00位置
+            canvas.translate(-coordinateXMoveDis, 0);
+        }
+        canvas.restore();
+    }
+
+    private float getDataMarkAreaWidth(Calendar startTime, Calendar stopTime) {
+        return (stopTime.getTimeInMillis() - startTime.getTimeInMillis()) / 1000 * SECOND_WIDTH;
+    }
+
+    /**
+     * 坐标都是从00:00开始向右移动
+     */
+    private float getCoordinateXMoveDis(Calendar startTime) {
+        long startTimeMilli = startTime.getTimeInMillis();
+        Date dateBegin = TimeUtil.getDateBeginOrEnd(startTime.getTime(), TimeUtil.FLAG_DAY_BEGIN);
+        long dateBeginMilli = dateBegin.getTime();
+        return (startTimeMilli - dateBeginMilli) / 1000 * SECOND_WIDTH;
     }
 
     private void drawNormalMarks(Canvas canvas) {
@@ -148,6 +226,7 @@ public class CsmTimeAxis extends View {
         super.computeScroll();
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            invalidate();
         }
     }
 
@@ -258,5 +337,32 @@ public class CsmTimeAxis extends View {
             return;
         }
         mScroller.startScroll(getScrollX(), getScrollY(), dx, 0);
+        invalidate();
     }
+
+    /**
+     * 测试使用的数据实体类
+     */
+    public static class EZDeviceRecordFile {
+        private Calendar startTime;
+        private Calendar stopTime;
+
+        public Calendar getStartTime() {
+            return startTime;
+        }
+
+        public void setStartTime(Calendar startTime) {
+            this.startTime = startTime;
+        }
+
+        public Calendar getStopTime() {
+            return stopTime;
+        }
+
+        public void setStopTime(Calendar stopTime) {
+            this.stopTime = stopTime;
+        }
+    }
+
+
 }

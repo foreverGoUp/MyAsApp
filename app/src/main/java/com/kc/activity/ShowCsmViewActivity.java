@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.TimeUtils;
@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_CLEAN;
 import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_LIGHT;
 import static com.kc.custom.CsmSpiderWebView.INDEX_TYPE_OXYGEN;
@@ -31,7 +34,7 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
 
     private static final String TAG = "ShowCsmViewActivity";
 
-    private RelativeLayout mContainer;
+    private LinearLayout mContainer;
     private CsmRadarView mCsmRadarView;
     private CsmSpiderWebView mCsmSpiderWebView;
     private List<CsmRadarView.RoomInfo> mRoomInfos = new ArrayList<>(8);
@@ -51,7 +54,8 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
 
     @Override
     protected void initUI() {
-        mContainer = (RelativeLayout) findViewById(R.id.llayout_show_csm_view_container);
+        ButterKnife.bind(this);
+        mContainer = (LinearLayout) findViewById(R.id.llayout_show_csm_view_container);
         //仿仪表盘
         CsmDialView view = (CsmDialView) findViewById(R.id.csmDialView);
         view.setOnClickListener(this);
@@ -126,6 +130,9 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.csmTimeAxis:
+                testCsmTimeAxis();
+                break;
             case R.id.csmDialView:
                 ((CsmDialView) view).startAnimation(250);
                 test();
@@ -181,6 +188,21 @@ public class ShowCsmViewActivity extends BaseActivity implements CsmDialView.OnC
                 break;
             }
         }
+    }
+
+    private void testCsmTimeAxis() {
+        int maxSeconds = 8 * 3600;
+        Random random = new Random();
+        long curTimeMilli = System.currentTimeMillis();
+        long resultTimeMillis = curTimeMilli + random.nextInt(maxSeconds) * 1000;
+        Log.e(TAG, "时间轴移动到：" + TimeUtils.millis2String(resultTimeMillis));
+        mCsmTimeAxis.setCurrentTime(resultTimeMillis);
+
+    }
+
+    @OnClick(R.id.bt_test)
+    void clickTestBt() {
+        testCsmTimeAxis();
     }
 
     private void test() {
