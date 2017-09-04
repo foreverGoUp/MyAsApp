@@ -27,13 +27,26 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //    compile 'com.android.support:appcompat-v7:23.3.1'
-    compile files('libs/activation.jar')
-    compile files('libs/fastjson-1.2.5.jar')
-    //RxJava/RxAndroid
+//    compile files('libs/activation.jar')
+//    compile files('libs/fastjson-1.2.5.jar')
+    //zhy 6.0权限
+    //java工具代码库
+    //RxAndroid
+    //RxJava
+    //RxAndroid
+    //RxJava
     //Retrofit
-    //动画效果库，SlidingMenu
+    //Retrofit interceptor
+    //recyclerview
+    //动画工具库
+    //强大的recyclerview 适配器库
+    //java工具代码库
+    //butterknife
+    //butterknife
+    //基于zxing封装的库
+    //zhy 6.0权限
     compile 'com.zhy:mpermission-api:1.0.0'
-    compile 'com.blankj:utilcode:1.0'
+    compile 'com.blankj:utilcode:1.8.5'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.3.0'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
@@ -44,9 +57,10 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
-    compile 'com.blankj:utilcode:1.8.5'
     compile 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile 'com.mylhyl:zxingscanner:1.5.2'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     annotationProcessor 'com.zhy:mpermission-compiler:1.0.0'
 }

@@ -29,10 +29,11 @@
         <activity android:name="com.kc.activity.RetrofitExampleActivity" />
         <activity android:name="com.kc.activity.RecyclerViewTestActivity" />
         <activity android:name="com.kc.activity.SlidingMenuUseActivity" />
-        <activity android:name="com.kc.activity.ZoneViewTestActivity"></activity>
+        <activity android:name="com.kc.activity.ZoneViewTestActivity" />
         <activity android:name="com.kc.activity.BRVAHActivity" />
-        <activity android:name="com.kc.activity.TestActivity"></activity>
-        <activity android:name="com.kc.activity.RxJava2UseActivity"></activity>
+        <activity android:name="com.kc.activity.TestActivity" />
+        <activity android:name="com.kc.activity.RxJava2UseActivity" />
+        <activity android:name="com.kc.activity.MainActivity"></activity>
     </application>
 
 </manifest>

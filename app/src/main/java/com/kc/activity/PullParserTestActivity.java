@@ -1,15 +1,13 @@
 package com.kc.activity;
 
 import android.content.res.AssetManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.kc.bean.Student;
 import com.kc.myasapp.R;
 import com.kc.util.ParserByPull;
-
-import org.xml.sax.Parser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +18,7 @@ public class PullParserTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_pull_parser_test);
 
         AssetManager manager = getAssets();
         InputStream inputStream = null;
