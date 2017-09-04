@@ -4,6 +4,8 @@ import android.app.Application;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.Utils;
+import com.bumptech.glide.request.target.ViewTarget;
+import com.kc.myasapp.R;
 
 /**
  * Created by Administrator on 2017/1/15.
@@ -15,6 +17,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ViewTarget.setTagId(R.string.app_name);
         mMyApp = this;
         Utils.init(this);
     }
