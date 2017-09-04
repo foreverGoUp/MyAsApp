@@ -30,6 +30,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.company_config
+            debuggable true
         }
     }
     packagingOptions {
@@ -74,6 +75,7 @@ dependencies {
     compile 'com.mylhyl:zxingscanner:1.5.2'
     compile 'com.github.bumptech.glide:glide:4.0.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.jph.takephoto:takephoto_library:4.0.3'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     annotationProcessor 'com.zhy:mpermission-compiler:1.0.0'

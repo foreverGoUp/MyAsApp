@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (AppConstant.RQ_1 == requestCode) {
-                mTv1.setText("扫描结果：" + data.getStringExtra(AppConstant.KEY_DEVICE_ID));
+                mTv1.setText("扫描结果：" + data.getStringExtra(ScannerActivity.KEY_SCAN_RESULT));
             }
         }
     }

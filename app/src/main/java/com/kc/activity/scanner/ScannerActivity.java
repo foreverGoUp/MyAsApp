@@ -5,24 +5,37 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.google.zxing.Result;
 import com.google.zxing.client.result.ParsedResult;
+import com.jph.takephoto.app.TakePhoto;
+import com.jph.takephoto.app.TakePhotoImpl;
+import com.jph.takephoto.model.InvokeParam;
+import com.jph.takephoto.model.TContextWrap;
+import com.jph.takephoto.model.TResult;
+import com.jph.takephoto.permission.InvokeListener;
+import com.jph.takephoto.permission.PermissionManager;
+import com.jph.takephoto.permission.TakePhotoInvocationHandler;
 import com.kc.base.BaseScannerActivity;
 import com.kc.myasapp.R;
 import com.mylhyl.zxing.scanner.ScannerView;
 import com.mylhyl.zxing.scanner.common.Scanner;
+import com.mylhyl.zxing.scanner.decode.QRDecode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class ScannerActivity extends BaseScannerActivity {
+public class ScannerActivity extends BaseScannerActivity implements TakePhoto.TakeResultListener, InvokeListener {
     public static final String KEY_SCAN_RESULT = "KEY_SCAN_RESULT";//
 
     @BindView(R.id.scannerView)
     ScannerView mScannerView;
+    private TakePhoto mTakePhoto;
+    private InvokeParam mInvokeParam;
 
     public static void actionStartForResult(FragmentActivity activity, int requestCode) {
         Intent intent = new Intent(activity, ScannerActivity.class);
@@ -34,6 +47,7 @@ public class ScannerActivity extends BaseScannerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
+        getTakePhoto().onCreate(savedInstanceState);
         initUI();
         init();
     }
@@ -90,5 +104,66 @@ public class ScannerActivity extends BaseScannerActivity {
             setResult(Activity.RESULT_OK, intent);
         }
         finish();
+    }
+
+    @OnClick(R.id.bt_2)
+    void clickBt2() {
+        getTakePhoto().onPickFromGallery();
+    }
+
+    /**
+     * 获取TakePhoto实例
+     *
+     * @return
+     */
+    public TakePhoto getTakePhoto() {
+        if (mTakePhoto == null) {
+            mTakePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
+        }
+        return mTakePhoto;
+    }
+
+    @Override
+    public void takeSuccess(TResult result) {
+        Log.e(TAG, "takeSuccess: 获得照片成功：" + result.getImage().getOriginalPath());
+        QRDecode.decodeQR(result.getImage().getOriginalPath(), this);
+    }
+
+    @Override
+    public void takeFail(TResult result, String msg) {
+        Log.e(TAG, "takeFail: 获得照片失败：" + msg);
+    }
+
+    @Override
+    public void takeCancel() {
+        Log.e(TAG, "takeCancel: 取消获得照片");
+    }
+
+    @Override
+    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
+        PermissionManager.TPermissionType type = PermissionManager.checkPermission(TContextWrap.of(this), invokeParam.getMethod());
+        if (PermissionManager.TPermissionType.WAIT.equals(type)) {
+            this.mInvokeParam = invokeParam;
+        }
+        return type;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.TPermissionType type = PermissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.handlePermissionsResult(this, type, mInvokeParam, this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getTakePhoto().onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        getTakePhoto().onSaveInstanceState(outState);
     }
 }

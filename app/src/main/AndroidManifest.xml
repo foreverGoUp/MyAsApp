@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kc.myasapp">
 
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--<uses-permission android:name="android.permission.INTERNET" />-->
+    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:name="com.kc.util.MyApp"
         android:allowBackup="true"
@@ -24,8 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.kc.activity.PullParserTestActivity" />
-        <activity android:name="com.kc.activity.ShowCsmViewActivity">
-        </activity>
+        <activity android:name="com.kc.activity.ShowCsmViewActivity"></activity>
         <activity android:name="com.kc.activity.PermissionTestActivity" />
         <activity android:name="com.kc.activity.PullToRefreshTestActivity" />
         <activity android:name="com.kc.activity.MailTestActivity" />
@@ -40,10 +38,12 @@
         <activity android:name="com.kc.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="com.kc.activity.scanner.ScannerActivity" />
+        <activity android:name="com.kc.activity.TakePhotoActivity"></activity>
     </application>
 
 </manifest>
