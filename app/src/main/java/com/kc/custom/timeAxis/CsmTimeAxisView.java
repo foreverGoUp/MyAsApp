@@ -194,7 +194,7 @@ public class CsmTimeAxisView extends View {
         canvas.save();
         canvas.translate(SCREEN_WIDTH / 2, markLineAreaHeight + getPaddingTop());
         //画00:00刻度线
-        canvas.drawLine(0, 0, 0, -markLineAreaHeight * 3 / 4, mNormalMarkPaint);
+        canvas.drawLine(0, 0, 0, -hourMarkHeight, mNormalMarkPaint);
         canvas.drawText(getHourString(0, false), 0, timeMarkY, mNormalMarkPaint);
 //        float markMoveDis = 0;
 //        final float halfScreenW = SCREEN_WIDTH/2;
