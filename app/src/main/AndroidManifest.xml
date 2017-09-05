@@ -43,7 +43,6 @@
             </intent-filter>
         </activity>
         <activity android:name="com.kc.activity.scanner.ScannerActivity" />
-        <activity android:name="com.kc.activity.TakePhotoActivity"></activity>
     </application>
 
 </manifest>
