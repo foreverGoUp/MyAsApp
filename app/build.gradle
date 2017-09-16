@@ -63,6 +63,7 @@ dependencies {
     //butterknife
     //基于zxing封装的库
     //zhy 6.0权限
+
     compile 'com.zhy:mpermission-api:1.0.0'
     compile 'com.blankj:utilcode:1.0'
     compile 'io.reactivex:rxandroid:1.2.1'
@@ -85,7 +86,6 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'com.mylhyl:zxingscanner:1.5.2'
     compile 'com.github.bumptech.glide:glide:4.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.jph.takephoto:takephoto_library:4.0.3'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'

@@ -28,7 +28,7 @@ public class FileUtil {
 
     private static final String TAG = "FileUtil";
     //固定目录值
-    public static final String DIR_APP = "SmartMiniPhone/";
+    public static final String DIR_APP = "MyAsApp/";
     public static final String DIR_APP_APK = DIR_APP + "apk/";
     public static final String DIR_APP_LOGOUT = DIR_APP + "logout/";
     public static final String DIR_APP_CRASH = DIR_APP + "crash/";

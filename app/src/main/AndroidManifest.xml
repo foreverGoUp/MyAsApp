@@ -21,7 +21,6 @@
         <activity android:name="com.kc.activity.PullParserTestActivity" />
         <activity android:name="com.kc.activity.ShowCsmViewActivity">
         </activity>
-        <activity android:name="com.kc.activity.ShowCsmViewActivity"></activity>
         <activity android:name="com.kc.activity.PermissionTestActivity" />
         <activity android:name="com.kc.activity.PullToRefreshTestActivity" />
         <activity android:name="com.kc.activity.MailTestActivity" />
@@ -39,14 +38,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.kc.activity.RxJava2UseActivity"></activity>
-        <activity android:name="com.kc.activity.TestActivity" />
-        <activity android:name="com.kc.activity.RxJava2UseActivity" />
         <activity android:name="com.kc.activity.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name="com.kc.activity.scanner.ScannerActivity" />
     </application>
