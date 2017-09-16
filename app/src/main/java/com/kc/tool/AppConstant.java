@@ -142,6 +142,12 @@ public class AppConstant {
     public static final String KEY_DEVICE_ID = "device_id";//
     public static final String KEY_ROOM_ID = "room_id";//
     public static final String KEY_FRAGMENT_INDEX = "fragment_index";//
+    //请求码
+    public static final int RQ_ROOM_LIST_ACTIVITY = 1;
+    public static final int RQ_ADD_CAMERA = 2;
+    public static final int RQ_1 = 3;
+    public static final int RQ_2 = 4;
+    public static final int RQ_3 = 5;
 
     // key
     public static final String KEY_DIALOG_OLD_NAME = "dialog_old_name";

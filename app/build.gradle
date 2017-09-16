@@ -2,7 +2,18 @@ apply plugin: 'com.android.application'
 //apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.antfortune.freeline'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
+    signingConfigs {
+        company_config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
@@ -22,6 +33,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.company_config
+            debuggable true
         }
     }
     packagingOptions {
@@ -32,11 +45,24 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //    compile 'com.android.support:appcompat-v7:23.3.1'
-    compile files('libs/activation.jar')
-    compile files('libs/fastjson-1.2.5.jar')
-    //RxJava/RxAndroid
+    //    compile files('libs/activation.jar')
+    //    compile files('libs/fastjson-1.2.5.jar')
+    //zhy 6.0权限
+    //java工具代码库
+    //RxAndroid
+    //RxJava
+    //RxAndroid
+    //RxJava
     //Retrofit
-    //动画效果库，SlidingMenu
+    //Retrofit interceptor
+    //recyclerview
+    //动画工具库
+    //强大的recyclerview 适配器库
+    //java工具代码库
+    //butterknife
+    //butterknife
+    //基于zxing封装的库
+    //zhy 6.0权限
     compile 'com.zhy:mpermission-api:1.0.0'
     compile 'com.blankj:utilcode:1.0'
     compile 'io.reactivex:rxandroid:1.2.1'
@@ -49,7 +75,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
-    compile 'com.blankj:utilcode:1.8.5'
     compile 'com.jakewharton:butterknife:8.8.1'
     //3D地图so及jar
     compile 'com.amap.api:3dmap:latest.integration'
@@ -58,6 +83,12 @@ dependencies {
     //搜索功能
     compile 'com.amap.api:search:latest.integration'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile 'com.mylhyl:zxingscanner:1.5.2'
+    compile 'com.github.bumptech.glide:glide:4.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.jph.takephoto:takephoto_library:4.0.3'
     testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     annotationProcessor 'com.zhy:mpermission-compiler:1.0.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
 }
